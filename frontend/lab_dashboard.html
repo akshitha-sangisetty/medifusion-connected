@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab Dashboard – MediFusion</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ---------------------------------------------------- */
+/* --- 1. GLOBAL & LAYOUT (Teal/Aqua Theme) --- */
+/* ---------------------------------------------------- */
+body{
+    margin:0;
+    padding:0;
+    font-family:'Poppins',Arial,sans-serif;
+    /* Professional Teal/Aqua Gradient */
+    background:linear-gradient(135deg,#e0f7fa,#b2ebf2);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+}
+
+/* MAIN CONTAINER */
+.container{
+    width:90%;
+    max-width:1300px;
+    background:rgba(255,255,255,0.95);
+    border-radius:25px;
+    padding:40px;
+    box-shadow:0 12px 40px rgba(0,0,0,0.1);
+    backdrop-filter:blur(8px);
+    border:1px solid rgba(0,188,212,0.1); /* Subtle Teal border */
+}
+
+/* HEADER */
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+}
+
+.header h1{
+    margin:0;
+    font-size:36px;
+    color:#004d40; /* Deep Teal/Navy */
+    font-weight:700;
+}
+
+/* LOGOUT BUTTON */
+.logout-btn{
+    padding:12px 22px;
+    background:#e74c3c; /* Retained standard alert color */
+    color:white;
+    border:none;
+    border-radius:15px;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+    box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+.logout-btn:hover{
+    background:#c0392b;
+    transform:scale(1.02);
+}
+
+/* ---------------------------------------------------- */
+/* --- 2. BANNER (Welcome Message) --- */
+/* ---------------------------------------------------- */
+.banner{
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.1);
+    display:flex;
+    align-items:center;
+    gap:30px;
+    margin-bottom:40px;
+    border-left:5px solid #00bcd4; /* Accent Teal Line */
+}
+
+.banner img{
+    width:120px;
+    /* Use CSS filter to match the Teal palette */
+    filter:invert(46%) sepia(35%) saturate(1450%) hue-rotate(159deg) brightness(97%) contrast(101%); 
+    animation:float 4s infinite ease-in-out;
+}
+
+@keyframes float{
+    0%{transform:translateY(0);}
+    50%{transform:translateY(-8px);}
+    100%{transform:translateY(0);}
+}
+
+.banner-text h2{
+    margin:0;
+    font-size:28px;
+    color:#004d40;
+    font-weight:600;
+}
+
+.banner-text p{
+    margin:5px 0 0;
+    font-size:16px;
+    color:#00838f;
+}
+
+/* ---------------------------------------------------- */
+/* --- 3. CARD GRID (Stats) --- */
+/* ---------------------------------------------------- */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:30px;
+}
+
+.card{
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 4px 18px rgba(0,0,0,0.08);
+    text-align:center;
+    transition:transform 0.3s, box-shadow 0.3s;
+    border-bottom:4px solid #26c6da; /* Subtle Teal Underline */
+}
+
+.card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+.card img{
+    width:70px;
+    margin-bottom:15px;
+    filter:invert(46%) sepia(35%) saturate(1450%) hue-rotate(159deg) brightness(97%) contrast(101%); 
+}
+
+.card h3{
+    margin:0 0 10px 0;
+    color:#006064;
+    font-size:22px;
+    font-weight:600;
+}
+
+.card p{
+    color:#00838f;
+    margin:0;
+    font-size:15px;
+}
+
+/* ---------------------------------------------------- */
+/* --- 4. UPLOAD SECTION (Form) --- */
+/* ---------------------------------------------------- */
+.upload-section{
+    margin-top:50px;
+}
+
+.section-title{
+    font-size:26px;
+    color:#004d40;
+    margin-bottom:20px;
+    font-weight:700;
+    border-bottom:2px solid #e0f7fa;
+    padding-bottom:5px;
+}
+
+.upload-card{
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 4px 18px rgba(0,0,0,0.08);
+    border:1px solid #b2ebf2;
+}
+
+.input-box, textarea{
+    width:100%;
+    padding:14px;
+    border-radius:12px;
+    border:1px solid #80deea; /* Light Teal Border */
+    font-size:16px;
+    margin-bottom:20px;
+    box-sizing:border-box;
+    color:#37474f;
+    transition:border-color 0.3s, box-shadow 0.3s;
+}
+
+.input-box:focus, textarea:focus{
+    outline:none;
+    border-color:#00bcd4; /* Bright Teal Focus */
+    box-shadow:0 0 0 3px rgba(0,188,212,0.2);
+}
+
+.file-box{
+    /* Use standard input-box styling for consistency */
+    width:100%;
+    padding:14px;
+    border-radius:12px;
+    border:1px solid #80deea;
+    background:#f4ffff; /* Very light teal background for file input */
+    margin-bottom:20px;
+    color:#006064;
+    cursor:pointer;
+}
+
+textarea{
+    min-height:120px;
+}
+
+/* SUBMIT BUTTON */
+.submit-btn{
+    width:100%;
+    padding:16px;
+    background:#00bcd4; /* Primary Action Teal */
+    color:white;
+    border:none;
+    border-radius:15px;
+    font-size:18px;
+    font-weight:700;
+    cursor:pointer;
+    transition:0.3s;
+    margin-top:10px;
+    box-shadow:0 6px 15px rgba(0,188,212,0.4);
+}
+
+.submit-btn:hover{
+    background:#0097a7;
+    transform:scale(1.01);
+    box-shadow:0 8px 20px rgba(0,188,212,0.5);
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+    .banner{
+        flex-direction:column;
+        text-align:center;
+    }
+    .header{
+        flex-direction:column;
+        gap:15px;
+    }
+    .header h1{
+        font-size:28px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>🔬 Lab Dashboard</h1>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="banner">
+        <img src="https://cdn-icons-png.flaticon.com/512/3456/3456423.png" alt="Lab Icon">
+        <div class="banner-text">
+            <h2>Welcome, Lab Technician</h2>
+            <p>Efficiently upload and manage medical test results for patient case files.</p>
+        </div>
+    </div>
+
+    <div class="grid">
+
+        <div class="card">
+            <img src="https://cdn-icons-png.flaticon.com/512/3004/3004458.png" alt="Pending Tests Icon">
+            <h3>Pending Tests</h3>
+            <p>12 new tests require analysis.</p>
+        </div>
+
+        <div class="card">
+            <img src="https://cdn-icons-png.flaticon.com/512/2966/2966327.png" alt="Reports to Upload Icon">
+            <h3>Reports Ready</h3>
+            <p>3 completed reports awaiting upload.</p>
+        </div>
+
+        <div class="card">
+            <img src="https://cdn-icons-png.flaticon.com/512/3126/3126647.png" alt="Completed Reports Icon">
+            <h3>Completed Reports</h3>
+            <p>Track all 45 reports uploaded this month.</p>
+        </div>
+
+    </div>
+
+    <div class="upload-section">
+        <div class="section-title">Upload New Test Report</div>
+
+        <div class="upload-card">
+
+            <input id="caseId" class="input-box" placeholder="Enter Patient Case ID (Mandatory)" required>
+            
+            <label for="fileUpload" style="font-weight:600; color:#006064; display:block; margin-bottom:5px;">Select Report File (PDF/Image)</label>
+            <input type="file" id="fileUpload" class="file-box" required>
+
+            <textarea id="comments" placeholder="Include any critical lab observations or notes for the doctor here... (optional)"></textarea>
+
+            <button class="submit-btn" onclick="uploadLabReport()">
+                <span style="margin-right:8px;">⬆️</span> Finalize & Submit Report
+            </button>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+function logout(){
+    alert("Logged out of MediFusion Lab System.");
+    window.location.href = "login.html";
+}
+
+function uploadReport(){
+    let caseId = document.getElementById("caseId").value.trim();
+    if(caseId === ""){
+        alert("Attention: Please enter the Patient Case ID before uploading.");
+        return;
+    }
+    // Added a check for file selection
+    let fileInput = document.getElementById("fileUpload");
+    if(fileInput.files.length === 0){
+        alert("Attention: Please select a file to upload.");
+        return;
+    }
+    
+    // Simulated upload
+    alert(`Report for Case ID ${caseId} uploaded successfully!`);
+    
+    // Clear form after simulated submission
+    document.getElementById("caseId").value = "";
+    document.getElementById("fileUpload").value = "";
+    document.getElementById("comments").value = "";
+}
+</script>
+<script src="api.js"></script>
+<script src="lab.js"></script>
+
+</body>
+</html>

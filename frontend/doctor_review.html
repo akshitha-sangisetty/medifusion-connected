@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Doctor Case Review – MediFusion</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ==== GLOBAL STYLE (Teal / Navy) ==== */
+body{
+  margin:0;padding:0;
+  font-family:'Poppins',Arial,sans-serif;
+  background:linear-gradient(135deg,#E0F2F1,#CFD8DC);
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:40px;
+}
+
+.container{
+  width:90%;max-width:1200px;
+  background:white;
+  padding:40px;
+  border-radius:16px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.1);
+}
+
+/* HEADER */
+.header{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:30px;
+}
+
+.header h1{
+  color:#37474F;font-size:30px;margin:0;font-weight:700;
+}
+
+.logout-btn{
+  padding:12px 22px;
+  background:#e74c3c;color:white;
+  border:none;border-radius:8px;
+  font-size:16px;font-weight:600;
+  cursor:pointer;
+}
+.logout-btn:hover{ background:#c0392b; }
+
+/* BANNER */
+.banner{
+  display:flex;align-items:center;
+  background:white;padding:25px;border-radius:16px;
+  border-left:5px solid #00796B;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+  margin-bottom:35px;
+}
+.banner img{
+  width:90px;margin-right:20px;
+  filter:invert(34%) sepia(85%) saturate(300%) hue-rotate(158deg);
+}
+.banner-text h2{
+  margin:0;color:#00796B;font-size:26px;font-weight:600;
+}
+.banner-text p{
+  margin:5px 0 0;color:#78909C;font-size:15px;
+}
+
+/* GRID */
+.grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:25px;
+}
+
+/* CARDS */
+.card{
+  background:white;padding:25px;border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+.card h3{
+  margin:0 0 10px 0;
+  color:#37474F;font-size:20px;font-weight:600;
+  border-bottom:2px solid #E0F2F1;
+  padding-bottom:5px;
+}
+
+/* TEXT BOXES */
+.text-box{
+  width:100%;min-height:120px;
+  padding:14px;border-radius:10px;
+  border:1px solid #CFD8DC;font-size:15px;
+  color:#263238;resize:vertical;
+}
+.text-box:focus{
+  border-color:#4DB6AC;
+  box-shadow:0 0 8px rgba(77,182,172,0.4);
+}
+
+/* READ-ONLY */
+#symptomsBox,#aiBox{
+  background:#F4FFFF;border-left:4px solid #4DB6AC;
+  padding:15px;font-weight:500;color:#004D40;
+}
+
+/* SUBMIT */
+.submit-btn{
+  width:100%;padding:16px;margin-top:30px;
+  background:#00796B;color:white;
+  border:none;border-radius:10px;
+  font-size:18px;font-weight:600;
+  cursor:pointer;
+}
+.submit-btn:hover{
+  background:#4DB6AC;
+  transform:translateY(-2px);
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>Case Review</h1>
+    <button class="logout-btn" onclick="doctorLogout()">Logout</button>
+  </div>
+
+  <div class="banner">
+    <img src="https://cdn-icons-png.flaticon.com/512/4320/4320337.png">
+    <div class="banner-text">
+      <h2>Review Patient Case</h2>
+      <p>Analyze symptoms, AI findings, and submit your review.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <h3>Patient Symptoms</h3>
+      <div id="symptomsBox" class="text-box">Loading...</div>
+    </div>
+
+    <div class="card">
+      <h3>AI Preliminary Analysis</h3>
+      <div id="aiBox" class="text-box">Loading...</div>
+    </div>
+
+    <div class="card">
+      <h3>Your Notes</h3>
+      <textarea id="docNotes" class="text-box"></textarea>
+    </div>
+
+    <div class="card">
+      <h3>Recommended Tests</h3>
+      <textarea id="tests" class="text-box"></textarea>
+    </div>
+
+    <div class="card" style="grid-column:1/-1;">
+      <h3>Final Diagnosis</h3>
+      <textarea id="diagnosis" class="text-box"></textarea>
+    </div>
+
+  </div>
+
+  <button class="submit-btn" onclick="submitDoctorReview()">SUBMIT REVIEW</button>
+</div>
+
+<script src="api.js"></script>
+<script src="doctor.js"></script>
+<script>
+    loadCaseForReview();
+</script>
+
+</body>
+</html>

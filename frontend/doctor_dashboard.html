@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Doctor Case Review – MediFusion</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* PROFESSIONAL TEAL & NAVY PALETTE (Consistent across all pages) */
+/* Primary Teal: #00796B (Deep Teal/Accent) */
+/* Secondary Accent: #37474F (Dark Navy/Charcoal for Titles/Text) */
+/* Standard Teal: #4DB6AC (Muted Teal for buttons/borders) */
+/* Light Background: #E0F2F1 (Very Light Teal/Gradient Start) */
+
+body{
+  margin:0;
+  padding:0;
+  font-family:'Poppins',Arial,sans-serif;
+  /* Consistent professional background gradient */
+  background:linear-gradient(135deg,#E0F2F1,#CFD8DC);
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:40px 0;
+}
+
+/* MAIN CONTAINER */
+.container{
+  width:90%;
+  max-width:1300px;
+  /* Solid white background for clean professionalism */
+  background:rgba(255,255,255,0.98);
+  border-radius:16px; /* Consistent radius */
+  padding:40px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.1);
+  backdrop-filter:blur(5px);
+  border:1px solid #CFD8DC;
+}
+
+/* HEADER */
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:30px;
+}
+
+.header h1{
+  margin:0;
+  font-size:30px;
+  color:#37474F; /* Dark Navy/Charcoal text */
+  font-weight:700;
+}
+
+/* LOGOUT BUTTON (Red retained for UX safety) */
+.logout-btn{
+  padding:12px 25px;
+  background:#E74C3C;
+  color:white;
+  border:none;
+  border-radius:8px;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.3s;
+  box-shadow:0 3px 10px rgba(231, 76, 60, 0.3);
+}
+.logout-btn:hover{
+  background:#C0392B;
+  transform:translateY(-1px);
+}
+
+/* BANNER */
+.banner{
+  background:white;
+  padding:25px 30px;
+  border-radius:16px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+  display:flex;
+  align-items:center;
+  gap:30px;
+  margin-bottom:40px;
+  border-left: 5px solid #00796B; /* Deep Teal Accent */
+}
+
+.banner img{
+  width:100px; /* Reduced image size for professionalism */
+  opacity:1;
+  /* Filter icon to Deep Teal color for consistency */
+  filter:invert(34%) sepia(85%) saturate(300%) hue-rotate(158deg) brightness(98%) contrast(90%); 
+  animation:float 4s infinite ease-in-out;
+}
+
+@keyframes float{
+  0%{transform:translateY(0);}
+  50%{transform:translateY(-8px);}
+  100%{transform:translateY(0);}
+}
+
+.banner-text h2{
+  margin:0;
+  font-size:28px;
+  color:#00796B; /* Deep Teal */
+  font-weight:600;
+}
+.banner-text p{
+  margin:5px 0 0;
+  font-size:15px;
+  color:#78909C; /* Soft Grey */
+}
+
+/* GRID LAYOUT */
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:25px; /* Consistent gap */
+}
+
+.card{
+  background:white;
+  padding:25px;
+  border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
+  border: 1px solid #CFD8DC;
+}
+
+.card h3{
+  margin:0 0 15px 0;
+  color:#37474F; /* Dark Navy/Charcoal text */
+  font-size:20px;
+  font-weight:600;
+  border-bottom: 2px solid #E0F2F1; /* Subtle separator */
+  padding-bottom: 8px;
+}
+
+/* INPUT BOXES */
+.text-box{
+  width:100%;
+  padding:15px;
+  border-radius:8px;
+  border:1px solid #CFD8DC;
+  font-size:15px;
+  color: #263238;
+  resize:vertical;
+  min-height:120px; /* Slightly taller boxes */
+}
+
+.text-box:focus{
+  outline:none;
+  border-color:#4DB6AC; /* Standard Teal focus */
+  box-shadow:0 0 8px rgba(77, 182, 172, 0.4);
+}
+
+/* READ-ONLY BOXES (Symptoms/AI Analysis) */
+#symptomsBox, #aiBox {
+  /* Ensure read-only boxes look distinct but professional */
+  background: #F4FFFF !important; /* Very light teal background */
+  border-left: 4px solid #4DB6AC; 
+  min-height:120px;
+  padding: 15px;
+  color: #004D40; /* Darker teal text for read content */
+  font-weight: 500;
+}
+
+/* SUBMIT BUTTON */
+.submit-btn{
+  width:100%;
+  padding:16px;
+  background:#00796B; /* Deep Teal for main action */
+  color:white;
+  border:none;
+  border-radius:8px;
+  font-size:18px;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.3s;
+  margin-top:30px;
+  letter-spacing: 0.5px;
+}
+
+.submit-btn:hover{
+  background:#4DB6AC;
+  transform:translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 121, 107, 0.3);
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .grid{
+    grid-template-columns:1fr;
+  }
+  .banner{
+    flex-direction:column;
+    text-align:center;
+    border-left:none;
+    border-top: 5px solid #00796B;
+    gap: 15px;
+  }
+  .header{
+    flex-direction: column;
+    gap: 15px;
+  }
+  .header h1, .logout-btn{
+    width: 100%;
+    text-align: center;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+    <h1>Case Review</h1>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+    <div class="banner">
+    <img src="https://cdn-icons-png.flaticon.com/512/4320/4320337.png" alt="Review Icon">
+    <div class="banner-text">
+      <h2>Review Patient Case</h2>
+      <p>Analyze symptoms, give recommendations, and finalize the diagnosis.</p>
+    </div>
+  </div>
+
+    <div class="grid">
+
+        <div class="card">
+      <h3>Patient Symptoms</h3>
+      <div id="symptomsBox" class="text-box">
+      </div>
+    </div>
+
+        <div class="card">
+      <h3>AI Preliminary Analysis</h3>
+      <div id="aiBox" class="text-box">
+        Placeholder: Suggests high probability of bacterial infection (Pneumonia) based on symptom and fever severity. Recommend chest X-ray and full blood work.
+      </div>
+    </div>
+
+        <div class="card">
+      <h3>Your Notes</h3>
+      <textarea id="docNotes" class="text-box" placeholder="Write your observations..."></textarea>
+    </div>
+
+        <div class="card">
+      <h3>Recommend Diagnostic Tests</h3>
+      <textarea id="tests" class="text-box" placeholder="Recommend tests (e.g., CT scan, Spirometry)..."></textarea>
+    </div>
+
+        <div class="card" style="grid-column:1 / -1;">
+      <h3>Final Diagnosis</h3>
+      <textarea id="finalDiag" class="text-box" placeholder="Enter final diagnosis..."></textarea>
+    </div>
+
+  </div>
+
+    <button class="submit-btn" onclick="submitReview()">SUBMIT REVIEW</button>
+
+</div>
+
+<script>
+function logout(){
+  alert("Logged out!");
+  window.location.href = "login.html"; 
+}
+
+function submitReview(){
+  let notes = document.getElementById("docNotes").value.trim();
+  let tests = document.getElementById("tests").value.trim();
+  let diag = document.getElementById("finalDiag").value.trim();
+  
+  if(!diag){
+    alert("Please enter final diagnosis.");
+    return;
+  }
+
+  alert("Review submitted successfully!");
+  // TODO: send to backend (POST)
+}
+</script>
+<script src="api.js"></script>
+<script src="doctor.js"></script>
+<script>
+    loadAssignedCases();
+</script>
+
+</body>
+</html>

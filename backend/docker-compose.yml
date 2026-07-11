@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: medifusion_api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile.celery
+    container_name: medifusion_celery
+    depends_on:
+      - redis
+      - postgres
+    command: celery -A app.workers.celery_app.celery worker --loglevel=info
+
+  redis:
+    image: redis:7-alpine
+    container_name: medifusion_redis
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: medifusion_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: medifusion
+    ports:
+      - "5432:5432"
+    volumes:
+      - backend_backend_pgdata:/var/lib/postgresql/data
+
+volumes:
+  backend_backend_pgdata:

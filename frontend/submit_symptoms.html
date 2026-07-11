@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Submit Symptoms – MediCare Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* PROFESSIONAL TEAL COLOR PALETTE */
+/* Primary Teal: #00796B (Deep Teal/Medical Green) */
+/* Secondary Teal: #4DB6AC (Standard Teal) */
+/* Light Accent: #E0F2F1 (Very Light Teal) */
+/* Text/Detail: #424242 */
+
+body{
+  margin:0;padding:0;
+  font-family: 'Poppins', Arial, sans-serif;
+  /* Soft, professional gradient background using teal accents */
+  background: linear-gradient(135deg, #E0F2F1, #B2DFDB); 
+  display:flex;justify-content:center;align-items:center;
+  height:100vh;
+}
+.wrapper{
+  width:90%;max-width:1100px;height:85vh;
+  /* White background with slight transparency for depth */
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px; /* Slightly reduced border radius */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  display:flex;overflow:hidden;
+  backdrop-filter: blur(8px);
+}
+.left{
+  width:50%;
+  /* Solid professional teal background */
+  background: #00796B; 
+  display:flex;justify-content:center;align-items:center;
+  position:relative;
+  /* Added a professional curve/shape for style */
+  clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%); 
+}
+
+/* IMAGE AND ANIMATION (Kept to maintain modern feel) */
+.left img.main{
+  width:70%;max-width:300px; /* Reduced size for elegance */
+  animation: float 4s infinite ease-in-out;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3)); /* Added shadow to white icon */
+}
+@keyframes float{
+  0%{transform:translateY(0);}
+  50%{transform:translateY(-14px);}
+  100%{transform:translateY(0);}
+}
+
+/* Minimal professional icons */
+.icon{
+  position:absolute;
+  opacity:0.2; /* Increased opacity for visibility on dark teal background */
+  filter: invert(1); /* Made icons white for contrast */
+}
+.i1{top:45px;right:40px;width:120px;}
+.i2{bottom:50px;left:60px;width:110px;}
+.i3{bottom:45%;right:60px;width:80px;}
+
+.right{
+  width:50%;padding:40px;
+  display:flex;flex-direction:column;justify-content:center;
+}
+.card{
+  background: #FFFFFF; /* Pure white card for cleanliness */
+  padding:35px;border-radius:12px; /* Smaller radius for sharper, cleaner look */
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  border: 1px solid #E0E0E0;
+}
+h2{
+  text-align:center;
+  color: #4DB6AC; /* Standard teal heading */
+  font-size:32px; /* Larger heading */
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+.subtitle{
+  text-align:center;
+  color:#607D8B; /* Professional grey subtitle */
+  margin-bottom:25px;
+  font-size: 16px;
+}
+
+/* FORM ELEMENTS */
+.input-box{
+  width:100%;padding:14px;border-radius:8px;
+  margin-bottom:15px;font-size:16px;
+  border:1px solid #CFD8DC; /* Subtle grey border */
+  color: #424242;
+  box-sizing: border-box; /* Ensures padding is included in the width */
+  resize: vertical; /* Allow resizing for textarea */
+}
+.input-box:focus{
+  outline:none;
+  border-color: #4DB6AC; /* Primary teal focus color */
+  box-shadow:0 0 8px rgba(77, 182, 172, 0.4);
+}
+
+button{
+  width:100%;padding:16px;
+  border:none;
+  background: #4DB6AC; /* Standard teal button */
+  border-radius:8px;
+  color:white;
+  font-size:18px;
+  font-weight: 600;
+  cursor:pointer;transition:0.3s;
+  letter-spacing: 0.5px;
+}
+button:hover{
+  transform: scale(1.01);
+  background: #00796B; /* Darker teal on hover */
+}
+
+/* FEEDBACK MESSAGES (Kept green/red for status standard) */
+.success,.error{
+  margin-top:15px;padding:12px;border-radius:8px;display:none;
+  font-weight: 500;
+}
+.success{background:#E8F5E9;color:#2E7D32;border: 1px solid #A5D6A7;}
+.error{background:#FFEBEE;color:#C62828;border: 1px solid #EF9A9A;}
+
+/* MOBILE/RESPONSIVENESS */
+@media(max-width:900px){
+  .wrapper{flex-direction:column;height:auto;min-height:100vh;}
+  .left{width:100%;height: 200px; clip-path: none;} /* Simplifies the left side on mobile */
+  .right{width:100%;padding: 30px 20px;}
+  .left img.main{width: 150px; max-width: 150px;}
+  .icon{display: none;} /* Hides background icons on small screens */
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+  <div class="left">
+    <img class="main" src="https://cdn-icons-png.flaticon.com/512/2966/2966327.png" alt="Medical Icon">
+
+    <img class="icon i1" src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png" alt="Icon">
+    <img class="icon i2" src="https://cdn-icons-png.flaticon.com/512/3081/3081419.png" alt="Icon">
+    <img class="icon i3" src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png" alt="Icon">
+  </div>
+
+  <div class="right">
+    <div class="card">
+      <h2>Submit Your Symptoms</h2>
+      <p class="subtitle">Securely share your concerns. We'll connect you with a specialist.</p>
+
+      <input id="sym" class="input-box" placeholder="Briefly state your main symptoms (e.g., severe headache, persistent cough)" required>
+      <textarea id="desc" class="input-box" rows="5" placeholder="Detailed description: When did it start? What makes it better or worse? (Optional)" ></textarea>
+
+      <button onclick="submitSymptoms()">SUBMIT CASE</button>
+
+      <div id="suc" class="success">Case successfully submitted!</div>
+      <div id="err" class="error"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function submitCase(){
+  let s=document.getElementById("sym").value.trim();
+  let suc=document.getElementById("suc");
+  let err=document.getElementById("err");
+  let desc = document.getElementById("desc").value.trim();
+
+  // Reset messages
+  suc.style.display="none";
+  err.style.display="none";
+
+  // Client-side validation
+  if(s===""){
+    err.innerHTML="*Please enter your main symptoms* to proceed.";
+    err.style.display="block";
+    return;
+  }
+
+  // Simulate API call and success response
+  // In a real application, you would send the 's' and 'desc' data to a server
+  setTimeout(() => {
+    // Generate a mock Case ID
+    const caseId = "CASE" + Math.floor(Math.random() * 90000 + 10000);
+    
+    // Display success message
+    suc.innerHTML="✅ Case submitted successfully! Your tracking ID is: <b>" + caseId + "</b>. A medical professional will review your submission shortly.";
+    suc.style.display="block";
+    
+    // Clear form fields on success
+    document.getElementById("sym").value = "";
+    document.getElementById("desc").value = "";
+
+  }, 500); // Simulate network delay
+}
+async function submitCase(){
+  const token = localStorage.getItem("token");
+
+  const symptoms = [document.getElementById("sym").value];
+
+  const result = await apiSubmitSymptoms(token, symptoms);
+
+  if(result.prediction){
+      document.getElementById("suc").innerHTML =
+        "Prediction: " + result.prediction.label +
+        " (prob: " + result.prediction.prob + ")";
+      document.getElementById("suc").style.display="block";
+  }
+}
+
+</script>
+<script src="api.js"></script>
+<script src="patient.js"></script>
+
+</body>
+</html>
