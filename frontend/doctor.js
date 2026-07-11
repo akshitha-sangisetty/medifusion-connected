@@ -2,7 +2,7 @@
 // doctor.js  —  Handles all Doctor Dashboard + Review Page
 // =======================================================
 
-const API = "http://localhost:8000";
+const API_URL_PROD = "https://medifusion-api-11yd.onrender.com"; const API = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? "http://localhost:8000" : API_URL_PROD; const API_BASE = API;
 
 // ------------------------------
 // 1️⃣ Get Token
