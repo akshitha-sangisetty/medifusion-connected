@@ -14,4 +14,4 @@ class UserOut(BaseModel):
     role: str
 
     class Config:
-        from_attributes = True  # Pydantic v2 replacement for orm_mode
+        orm_mode = True  # Pydantic v2 replacement for orm_mode
