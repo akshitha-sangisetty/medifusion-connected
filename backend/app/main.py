@@ -1,6 +1,7 @@
 import logging
 import os
 
+import socketio
 from fastapi import FastAPI, UploadFile, File, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -13,10 +14,12 @@ from app.models.base import Base
 from app.core.database import engine, get_db
 from app.api.patient.routes import router as patient_router
 from app.api.predict.routes import router as predict_router
-
-from app.redis_client import redis_client
 from app.api.lab.routes import router as lab_router
 from app.api.doctor.routes import router as doctor_router
+
+# Socket.IO manager (must be imported AFTER all route modules so they can use `sio`)
+from app.socket_manager import sio
+
 # ---------------------------
 # Logging
 # ---------------------------
@@ -26,29 +29,23 @@ logger = logging.getLogger(__name__)
 # ---------------------------
 # FastAPI app
 # ---------------------------
-app = FastAPI(title="MediFusion Backend")
-app.include_router(lab_router)
-app.include_router(patient_router) 
-app.include_router(doctor_router)
-app.include_router(predict_router)
+fastapi_app = FastAPI(title="MediFusion Backend")
+fastapi_app.include_router(lab_router)
+fastapi_app.include_router(patient_router)
+fastapi_app.include_router(doctor_router)
+fastapi_app.include_router(predict_router)
+fastapi_app.include_router(auth_router)
+
 # ---------------------------
 # CORS configuration
 # ---------------------------
-origins = [
-    "http://localhost:5500",
-    "http://127.0.0.1:5500",
-    "file://"
-]
-
-app.add_middleware(
+fastapi_app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=["*"],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Frontend URLs allowed      # GET, POST, PUT, DELETE, OPTIONS      # Allow all headers including Authorization
 
 # ---------------------------
 # Database setup
@@ -72,7 +69,7 @@ except Exception as e:
 class SymptomTest(BaseModel):
     symptoms: list[str]
 
-@app.post("/test-ai-symptoms", tags=["AI Test"])
+@fastapi_app.post("/test-ai-symptoms", tags=["AI Test"])
 def test_ai_symptoms(data: SymptomTest, current_user: User = Depends(get_current_user)):
     prediction = symptoms_to_prediction(data.symptoms)
     return {"input": data.symptoms, "prediction": prediction}
@@ -80,21 +77,16 @@ def test_ai_symptoms(data: SymptomTest, current_user: User = Depends(get_current
 # ---------------------------
 # Test model with image
 # ---------------------------
-@app.post("/test-ai-image", tags=["AI Test"])
+@fastapi_app.post("/test-ai-image", tags=["AI Test"])
 async def test_ai_image(file: UploadFile = File(...), current_user: User = Depends(get_current_user)):
     image_bytes = await file.read()
     prediction = deterministic_image_predict(image_bytes)
     return {"filename": file.filename, "prediction": prediction}
 
 # ---------------------------
-# Include Routers
-# ---------------------------
-app.include_router(auth_router)
-
-# ---------------------------
 # Root endpoint
 # ---------------------------
-@app.get("/", tags=["Root"])
+@fastapi_app.get("/", tags=["Root"])
 def root():
     return {"ok": True, "service": "MediFusion Backend"}
 
@@ -104,15 +96,14 @@ def root():
 from fastapi.openapi.utils import get_openapi
 
 def custom_openapi():
-    if app.openapi_schema:
-        return app.openapi_schema
+    if fastapi_app.openapi_schema:
+        return fastapi_app.openapi_schema
     openapi_schema = get_openapi(
-        title=app.title,
+        title=fastapi_app.title,
         version="1.0",
         description="MediFusion Backend API",
-        routes=app.routes,
+        routes=fastapi_app.routes,
     )
-    # Define security scheme for OAuth2
     openapi_schema["components"]["securitySchemes"] = {
         "OAuth2PasswordBearer": {
             "type": "http",
@@ -120,17 +111,16 @@ def custom_openapi():
             "bearerFormat": "JWT"
         }
     }
-    # Apply security requirement to /auth/me
     if "/auth/me" in openapi_schema["paths"]:
         openapi_schema["paths"]["/auth/me"]["get"]["security"] = [{"OAuth2PasswordBearer": []}]
-    app.openapi_schema = openapi_schema
-    return app.openapi_schema
+    fastapi_app.openapi_schema = openapi_schema
+    return openapi_schema
 
-app.openapi = custom_openapi
+fastapi_app.openapi = custom_openapi
 
-@app.get("/test-redis")
-def test_redis():
-    redis_client.set("msg", "Redis working!")
-    value = redis_client.get("msg")
-    return {"message": value.decode()}
-
+# ---------------------------
+# Mount Socket.IO onto FastAPI
+# Socket.IO handles /socket.io/* routes;
+# everything else goes to FastAPI.
+# ---------------------------
+app = socketio.ASGIApp(sio, other_asgi_app=fastapi_app)

@@ -251,3 +251,47 @@ async function submitReview() {
         showToast("Connection error. Could not submit review.", "error");
     }
 }
+
+// ============================================================
+// SOCKET.IO – Real-time sidebar refresh for doctors
+// ============================================================
+function initDoctorSocket() {
+    const token = getToken();
+    if (!token) return;
+
+    const SOCKET_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+        ? "http://localhost:8000"
+        : "https://medifusion-api-11yd.onrender.com";
+
+    const socket = io(SOCKET_URL, {
+        transports: ["websocket", "polling"],
+        auth: { token }
+    });
+
+    socket.on("connect", () => {
+        console.log("[Socket] Doctor connected:", socket.id);
+        socket.emit("join_doctor_room", {});
+    });
+
+    socket.on("room_joined", (data) => {
+        console.log("[Socket] Joined room:", data.room);
+    });
+
+    // When a case is updated (reviewed), silently refresh sidebar
+    socket.on("doctor_case_updated", (data) => {
+        console.log("[Socket] Case updated:", data);
+        // Refresh the sidebar list silently
+        loadAssignedCases();
+        showToast(`✅ Case #${data.case_id} marked as reviewed.`, "success");
+    });
+
+    socket.on("connect_error", (err) => {
+        console.warn("[Socket] Doctor socket error (graceful):", err.message);
+    });
+}
+
+// Boot
+document.addEventListener("DOMContentLoaded", () => {
+    loadAssignedCases();
+    initDoctorSocket();
+});

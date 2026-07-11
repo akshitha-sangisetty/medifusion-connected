@@ -179,3 +179,79 @@ function renderChart(predictionString) {
         }
     });
 }
+
+// ============================================================
+// SOCKET.IO – Real-time updates from the doctor
+// ============================================================
+function initSocket() {
+    const token = getToken();
+    const username = localStorage.getItem("username");
+    if (!token || !username) return;
+
+    const SOCKET_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+        ? "http://localhost:8000"
+        : "https://medifusion-api-11yd.onrender.com";
+
+    const socket = io(SOCKET_URL, {
+        transports: ["websocket", "polling"],
+        auth: { token }
+    });
+
+    socket.on("connect", () => {
+        console.log("[Socket] Connected:", socket.id);
+        socket.emit("join_patient_room", { username });
+    });
+
+    socket.on("room_joined", (data) => {
+        console.log("[Socket] Joined room:", data.room);
+    });
+
+    // Fires the moment a doctor submits their review – NO PAGE REFRESH NEEDED
+    socket.on("case_reviewed", (data) => {
+        console.log("[Socket] case_reviewed received:", data);
+
+        // Flash live update banner
+        const toast = document.getElementById("liveToast");
+        if (toast) {
+            toast.innerHTML = `🟢 <strong>Live Update!</strong> Your doctor has submitted a review. Diagnosis: <em>${data.final_diagnosis}</em>`;
+            toast.style.display = "block";
+            setTimeout(() => { toast.style.display = "none"; }, 10000);
+        }
+
+        // Update the doctor review card in-place
+        const reviewContainer = document.getElementById("reviewContainer");
+        if (reviewContainer) {
+            reviewContainer.innerHTML = `
+                <div class="info-item">
+                    <div class="info-label">Final Diagnosis</div>
+                    <div class="info-value" style="color: var(--accent-glow); font-size: 18px;">${data.final_diagnosis || "—"}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Treatment Plan / Tests</div>
+                    <div class="info-value">${data.treatment_plan || "—"}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Doctor's Notes</div>
+                    <div class="info-value">${data.doctor_notes || "—"}</div>
+                </div>
+            `;
+        }
+
+        // Update status badge
+        const badge = document.querySelector("#caseInfoContainer .status-badge");
+        if (badge) {
+            badge.textContent = "reviewed";
+            badge.className = "status-badge status-reviewed";
+        }
+    });
+
+    socket.on("connect_error", (err) => {
+        console.warn("[Socket] Connection error (graceful degradation):", err.message);
+    });
+}
+
+// Initialise on DOM ready
+document.addEventListener("DOMContentLoaded", () => {
+    loadPatientCase();
+    initSocket();
+});

@@ -6,6 +6,7 @@
 <title>Patient Dashboard – MediFusion Premium</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 
 <style>
 /* PREMIUM DARK GLASSMORPHISM PALETTE */
@@ -247,6 +248,11 @@ body {
         </div>
     </div>
 
+    <!-- Live Update Toast -->
+    <div id="liveToast" style="display:none; margin-bottom:20px; padding:16px 24px; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.4); border-radius:14px; color:#6EE7B7; font-size:15px; font-weight:600; animation: fadeIn 0.4s ease;">
+        🔴 Live update received from your doctor!
+    </div>
+
     <!-- Main Grid -->
     <div class="dashboard-grid">
         
@@ -280,8 +286,5 @@ body {
 
 <script src="api.js"></script>
 <script src="patient.js"></script>
-<script>
-    loadPatientCase();
-</script>
 </body>
 </html>
