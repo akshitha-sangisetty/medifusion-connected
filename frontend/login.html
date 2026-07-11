@@ -39,34 +39,7 @@
 
 
 <script src="api.js"></script>
-<script>
-document.getElementById("loginForm").addEventListener("submit", async function(e){
-    e.preventDefault();
 
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const role = document.getElementById("role").value;
-
-    const res = await apiLogin(username, password);
-
-    if (!res.access_token) {
-        alert("Login failed: " + (res.detail || "Invalid credentials"));
-        return;
-    }
-
-    // Save user info
-    localStorage.setItem("token", res.access_token);
-    localStorage.setItem("role", res.role);
-    localStorage.setItem("user_id", res.user_id);
-
-    // Redirect based on role
-    if (res.role === "doctor") window.location.href = "doctor_dashboard.html";
-    else if (res.role === "lab") window.location.href = "lab_dashboard.html";
-    else window.location.href = "patient_dashboard.html";
-});
-
-
-</script>
 <script src="api.js"></script>
 <script src="login.js"></script>
 
