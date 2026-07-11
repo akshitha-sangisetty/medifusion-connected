@@ -2,290 +2,511 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Doctor Case Review – MediFusion</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doctor Dashboard – MediFusion Premium</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-/* PROFESSIONAL TEAL & NAVY PALETTE (Consistent across all pages) */
-/* Primary Teal: #00796B (Deep Teal/Accent) */
-/* Secondary Accent: #37474F (Dark Navy/Charcoal for Titles/Text) */
-/* Standard Teal: #4DB6AC (Muted Teal for buttons/borders) */
-/* Light Background: #E0F2F1 (Very Light Teal/Gradient Start) */
-
-body{
-  margin:0;
-  padding:0;
-  font-family:'Poppins',Arial,sans-serif;
-  /* Consistent professional background gradient */
-  background:linear-gradient(135deg,#E0F2F1,#CFD8DC);
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  padding:40px 0;
+:root {
+    --bg-dark: #0F172A;
+    --sidebar-bg: rgba(20, 30, 50, 0.95);
+    --glass-bg: rgba(30, 41, 59, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --accent-gradient: linear-gradient(135deg, #A78BFA, #38BDF8);
+    --accent-purple: #A78BFA;
+    --accent-blue: #38BDF8;
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --success: #10B981;
+    --danger: #EF4444;
+    --warning: #F59E0B;
 }
 
-/* MAIN CONTAINER */
-.container{
-  width:90%;
-  max-width:1300px;
-  /* Solid white background for clean professionalism */
-  background:rgba(255,255,255,0.98);
-  border-radius:16px; /* Consistent radius */
-  padding:40px;
-  box-shadow:0 12px 30px rgba(0,0,0,0.1);
-  backdrop-filter:blur(5px);
-  border:1px solid #CFD8DC;
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Outfit', sans-serif;
+    background: radial-gradient(circle at bottom right, #1E1B4B, var(--bg-dark));
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
 }
 
-/* HEADER */
-.header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:30px;
-}
-
-.header h1{
-  margin:0;
-  font-size:30px;
-  color:#37474F; /* Dark Navy/Charcoal text */
-  font-weight:700;
-}
-
-/* LOGOUT BUTTON (Red retained for UX safety) */
-.logout-btn{
-  padding:12px 25px;
-  background:#E74C3C;
-  color:white;
-  border:none;
-  border-radius:8px;
-  font-size:16px;
-  font-weight:600;
-  cursor:pointer;
-  transition:0.3s;
-  box-shadow:0 3px 10px rgba(231, 76, 60, 0.3);
-}
-.logout-btn:hover{
-  background:#C0392B;
-  transform:translateY(-1px);
-}
-
-/* BANNER */
-.banner{
-  background:white;
-  padding:25px 30px;
-  border-radius:16px;
-  box-shadow:0 6px 18px rgba(0,0,0,0.08);
-  display:flex;
-  align-items:center;
-  gap:30px;
-  margin-bottom:40px;
-  border-left: 5px solid #00796B; /* Deep Teal Accent */
-}
-
-.banner img{
-  width:100px; /* Reduced image size for professionalism */
-  opacity:1;
-  /* Filter icon to Deep Teal color for consistency */
-  filter:invert(34%) sepia(85%) saturate(300%) hue-rotate(158deg) brightness(98%) contrast(90%); 
-  animation:float 4s infinite ease-in-out;
-}
-
-@keyframes float{
-  0%{transform:translateY(0);}
-  50%{transform:translateY(-8px);}
-  100%{transform:translateY(0);}
-}
-
-.banner-text h2{
-  margin:0;
-  font-size:28px;
-  color:#00796B; /* Deep Teal */
-  font-weight:600;
-}
-.banner-text p{
-  margin:5px 0 0;
-  font-size:15px;
-  color:#78909C; /* Soft Grey */
-}
-
-/* GRID LAYOUT */
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:25px; /* Consistent gap */
-}
-
-.card{
-  background:white;
-  padding:25px;
-  border-radius:12px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.08);
-  border: 1px solid #CFD8DC;
-}
-
-.card h3{
-  margin:0 0 15px 0;
-  color:#37474F; /* Dark Navy/Charcoal text */
-  font-size:20px;
-  font-weight:600;
-  border-bottom: 2px solid #E0F2F1; /* Subtle separator */
-  padding-bottom: 8px;
-}
-
-/* INPUT BOXES */
-.text-box{
-  width:100%;
-  padding:15px;
-  border-radius:8px;
-  border:1px solid #CFD8DC;
-  font-size:15px;
-  color: #263238;
-  resize:vertical;
-  min-height:120px; /* Slightly taller boxes */
-}
-
-.text-box:focus{
-  outline:none;
-  border-color:#4DB6AC; /* Standard Teal focus */
-  box-shadow:0 0 8px rgba(77, 182, 172, 0.4);
-}
-
-/* READ-ONLY BOXES (Symptoms/AI Analysis) */
-#symptomsBox, #aiBox {
-  /* Ensure read-only boxes look distinct but professional */
-  background: #F4FFFF !important; /* Very light teal background */
-  border-left: 4px solid #4DB6AC; 
-  min-height:120px;
-  padding: 15px;
-  color: #004D40; /* Darker teal text for read content */
-  font-weight: 500;
-}
-
-/* SUBMIT BUTTON */
-.submit-btn{
-  width:100%;
-  padding:16px;
-  background:#00796B; /* Deep Teal for main action */
-  color:white;
-  border:none;
-  border-radius:8px;
-  font-size:18px;
-  font-weight:600;
-  cursor:pointer;
-  transition:0.3s;
-  margin-top:30px;
-  letter-spacing: 0.5px;
-}
-
-.submit-btn:hover{
-  background:#4DB6AC;
-  transform:translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 121, 107, 0.3);
-}
-
-/* RESPONSIVE */
-@media(max-width:900px){
-  .grid{
-    grid-template-columns:1fr;
-  }
-  .banner{
-    flex-direction:column;
-    text-align:center;
-    border-left:none;
-    border-top: 5px solid #00796B;
-    gap: 15px;
-  }
-  .header{
+/* ========================
+   SIDEBAR
+======================== */
+.sidebar {
+    width: 320px;
+    min-width: 320px;
+    background: var(--sidebar-bg);
+    backdrop-filter: blur(20px);
+    border-right: 1px solid var(--glass-border);
+    display: flex;
     flex-direction: column;
-    gap: 15px;
-  }
-  .header h1, .logout-btn{
-    width: 100%;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow: hidden;
+}
+
+.sidebar-header {
+    padding: 30px 25px 20px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: 700;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 5px;
+}
+
+.doctor-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 15px;
+    background: rgba(167, 139, 250, 0.1);
+    padding: 12px 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.doctor-badge-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent-gradient);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+}
+
+.doctor-badge-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.doctor-badge-role {
+    font-size: 12px;
+    color: var(--accent-purple);
+}
+
+.case-list-header {
+    padding: 20px 25px 12px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-secondary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.refresh-btn {
+    background: none;
+    border: none;
+    color: var(--accent-blue);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0;
+    transition: transform 0.3s;
+}
+.refresh-btn:hover { transform: rotate(180deg); }
+
+.case-list {
+    overflow-y: auto;
+    flex: 1;
+    padding: 0 15px;
+}
+
+.case-item {
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    border: 1px solid var(--glass-border);
+    transition: all 0.2s ease;
+    background: rgba(0,0,0,0.2);
+}
+
+.case-item:hover, .case-item.active {
+    background: rgba(167, 139, 250, 0.15);
+    border-color: rgba(167, 139, 250, 0.4);
+    transform: translateX(4px);
+}
+
+.case-item-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 5px;
+}
+
+.case-item-meta {
+    font-size: 13px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+.dot-predicted { background: var(--accent-blue); box-shadow: 0 0 6px var(--accent-blue); }
+.dot-reviewed { background: var(--success); box-shadow: 0 0 6px var(--success); }
+.dot-new { background: var(--warning); box-shadow: 0 0 6px var(--warning); }
+
+.no-cases {
     text-align: center;
-  }
+    padding: 40px 20px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-style: italic;
+}
+
+.sidebar-footer {
+    padding: 20px 25px;
+    border-top: 1px solid var(--glass-border);
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 12px;
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.logout-btn:hover {
+    background: var(--danger);
+    color: white;
+}
+
+/* ========================
+   MAIN CONTENT
+======================== */
+.main {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+}
+
+.main-header {
+    margin-bottom: 35px;
+}
+
+.main-header h1 {
+    font-size: 30px;
+    font-weight: 700;
+    margin: 0;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.main-header p {
+    color: var(--text-secondary);
+    margin: 8px 0 0;
+    font-size: 16px;
+}
+
+/* Empty state */
+.empty-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 70%;
+    text-align: center;
+}
+
+.empty-icon { font-size: 80px; margin-bottom: 20px; opacity: 0.3; }
+.empty-main p { color: var(--text-secondary); font-size: 18px; }
+
+/* Review Grid */
+.review-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: border-color 0.3s;
+}
+
+.glass-card:hover { border-color: rgba(167, 139, 250, 0.3); }
+
+.card-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.read-box {
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 15px 18px;
+    font-size: 15px;
+    color: var(--text-primary);
+    line-height: 1.7;
+    min-height: 90px;
+}
+
+.chart-wrap {
+    width: 100%;
+    height: 220px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.text-input {
+    width: 100%;
+    padding: 15px 18px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-size: 15px;
+    font-family: 'Outfit', sans-serif;
+    resize: vertical;
+    min-height: 100px;
+    transition: all 0.3s;
+}
+
+.text-input:focus {
+    outline: none;
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 15px rgba(167, 139, 250, 0.2);
+}
+
+.text-input::placeholder { color: var(--text-secondary); opacity: 0.7; }
+
+.full-span { grid-column: 1 / -1; }
+
+.submit-review-btn {
+    width: 100%;
+    padding: 18px;
+    background: var(--accent-gradient);
+    border: none;
+    border-radius: 14px;
+    color: white;
+    font-size: 17px;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 20px rgba(167, 139, 250, 0.4);
+}
+.submit-review-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(167, 139, 250, 0.6);
+}
+
+.case-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.status-predicted { background: rgba(56,189,248,0.15); color: #7DD3FC; border: 1px solid rgba(56,189,248,0.3); }
+.status-reviewed { background: rgba(16,185,129,0.15); color: #6EE7B7; border: 1px solid rgba(16,185,129,0.3); }
+.status-new { background: rgba(245,158,11,0.15); color: #FCD34D; border: 1px solid rgba(245,158,11,0.3); }
+
+.no-ai { color: var(--text-secondary); font-style: italic; font-size: 14px; text-align: center; padding: 20px; }
+
+/* Toast Notification */
+.toast {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    padding: 16px 26px;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    z-index: 9999;
+    display: none;
+    animation: slideUp 0.3s ease;
+}
+.toast.success { background: rgba(16,185,129,0.9); color: white; border: 1px solid var(--success); }
+.toast.error { background: rgba(239,68,68,0.9); color: white; border: 1px solid var(--danger); }
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@media(max-width: 1100px) {
+    .review-grid { grid-template-columns: 1fr; }
+}
+
+@media(max-width: 800px) {
+    body { flex-direction: column; }
+    .sidebar { width: 100%; min-width: unset; height: auto; position: relative; }
+    .case-list { max-height: 200px; }
+    .main { padding: 20px; }
 }
 </style>
 </head>
-
 <body>
 
-<div class="container">
-
-    <div class="header">
-    <h1>Case Review</h1>
-    <button class="logout-btn" onclick="logout()">Logout</button>
-  </div>
-
-    <div class="banner">
-    <img src="https://cdn-icons-png.flaticon.com/512/4320/4320337.png" alt="Review Icon">
-    <div class="banner-text">
-      <h2>Review Patient Case</h2>
-      <p>Analyze symptoms, give recommendations, and finalize the diagnosis.</p>
-    </div>
-  </div>
-
-    <div class="grid">
-
-        <div class="card">
-      <h3>Patient Symptoms</h3>
-      <div id="symptomsBox" class="text-box">
-      </div>
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-header">
+        <div class="logo">🏥 MediFusion</div>
+        <div style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">AI-Powered Clinical Review</div>
+        <div class="doctor-badge">
+            <div class="doctor-badge-avatar">👨‍⚕️</div>
+            <div>
+                <div class="doctor-badge-name" id="doctorName">Doctor</div>
+                <div class="doctor-badge-role">Specialist Review</div>
+            </div>
+        </div>
     </div>
 
-        <div class="card">
-      <h3>AI Preliminary Analysis</h3>
-      <div id="aiBox" class="text-box">
-        Placeholder: Suggests high probability of bacterial infection (Pneumonia) based on symptom and fever severity. Recommend chest X-ray and full blood work.
-      </div>
+    <div class="case-list-header">
+        <span>Pending Cases</span>
+        <button class="refresh-btn" onclick="loadAssignedCases()" title="Refresh">↻</button>
     </div>
 
-        <div class="card">
-      <h3>Your Notes</h3>
-      <textarea id="docNotes" class="text-box" placeholder="Write your observations..."></textarea>
+    <div class="case-list" id="caseList">
+        <div class="no-cases">Loading cases...</div>
     </div>
 
-        <div class="card">
-      <h3>Recommend Diagnostic Tests</h3>
-      <textarea id="tests" class="text-box" placeholder="Recommend tests (e.g., CT scan, Spirometry)..."></textarea>
+    <div class="sidebar-footer">
+        <button class="logout-btn" onclick="logout()">🚪 Logout</button>
     </div>
-
-        <div class="card" style="grid-column:1 / -1;">
-      <h3>Final Diagnosis</h3>
-      <textarea id="finalDiag" class="text-box" placeholder="Enter final diagnosis..."></textarea>
-    </div>
-
-  </div>
-
-    <button class="submit-btn" onclick="submitReview()">SUBMIT REVIEW</button>
-
 </div>
 
-<script>
-function logout(){
-  alert("Logged out!");
-  window.location.href = "login.html"; 
-}
+<!-- Main Content -->
+<div class="main">
+    <div class="main-header">
+        <h1>Case Review Panel</h1>
+        <p>Select a patient case from the sidebar to begin your medical analysis.</p>
+    </div>
 
-function submitReview(){
-  let notes = document.getElementById("docNotes").value.trim();
-  let tests = document.getElementById("tests").value.trim();
-  let diag = document.getElementById("finalDiag").value.trim();
-  
-  if(!diag){
-    alert("Please enter final diagnosis.");
-    return;
-  }
+    <!-- Empty State -->
+    <div class="empty-main" id="emptyState">
+        <div class="empty-icon">🩻</div>
+        <p>Select a case to begin your review</p>
+    </div>
 
-  alert("Review submitted successfully!");
-  // TODO: send to backend (POST)
-}
-</script>
+    <!-- Review Form (hidden until a case is selected) -->
+    <div id="reviewPanel" style="display:none;">
+        <div style="margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+            <div>
+                <div class="case-label">Currently Reviewing</div>
+                <div style="font-size: 24px; font-weight: 700;" id="reviewPatientName">—</div>
+            </div>
+            <span class="status-badge" id="reviewStatus">—</span>
+        </div>
+
+        <div class="review-grid">
+
+            <!-- Patient Symptoms -->
+            <div class="glass-card">
+                <div class="card-title">🩺 Patient Symptoms</div>
+                <div class="read-box" id="symptomsDisplay">—</div>
+            </div>
+
+            <!-- AI Visualization -->
+            <div class="glass-card">
+                <div class="card-title">🤖 AI Prediction Chart</div>
+                <div class="chart-wrap">
+                    <div class="no-ai" id="chartFallback">No AI prediction available</div>
+                    <canvas id="aiChart" style="display:none;"></canvas>
+                </div>
+            </div>
+
+            <!-- AI Summary -->
+            <div class="glass-card">
+                <div class="card-title">📊 AI Result Summary</div>
+                <div class="read-box" id="aiResultDisplay">—</div>
+            </div>
+
+            <!-- Image Analysis -->
+            <div class="glass-card">
+                <div class="card-title">🖼️ Image / X-Ray Analysis</div>
+                <div class="read-box" id="xrayDisplay">No image uploaded by patient.</div>
+            </div>
+
+            <!-- Doctor Notes -->
+            <div class="glass-card">
+                <div class="card-title">📝 Your Observations</div>
+                <textarea id="docNotes" class="text-input" placeholder="Write your clinical observations, additional questions, etc..."></textarea>
+            </div>
+
+            <!-- Recommended Tests -->
+            <div class="glass-card">
+                <div class="card-title">🧪 Recommended Tests / Prescription</div>
+                <textarea id="docTests" class="text-input" placeholder="e.g. CBC, CT Scan, Spirometry, Amoxicillin 500mg..."></textarea>
+            </div>
+
+            <!-- Final Diagnosis -->
+            <div class="glass-card full-span">
+                <div class="card-title">✅ Final Diagnosis</div>
+                <textarea id="finalDiag" class="text-input" style="min-height: 80px;" placeholder="Enter your final diagnosis here. This will be visible to the patient."></textarea>
+            </div>
+
+        </div>
+
+        <div style="margin-top: 30px;">
+            <button class="submit-review-btn" onclick="submitReview()">Submit Review & Notify Patient</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
 <script src="api.js"></script>
 <script src="doctor.js"></script>
 <script>
     loadAssignedCases();
 </script>
-
 </body>
 </html>

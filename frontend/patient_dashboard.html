@@ -3,302 +3,281 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Patient Dashboard – Professional Version</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<title>Patient Dashboard – MediFusion Premium</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-/* PROFESSIONAL TEAL & NAVY PALETTE (Consistent across all pages) */
-/* Primary Teal: #00796B (Deep Teal/Accent) */
-/* Secondary Accent: #37474F (Dark Navy/Charcoal for Titles/Text) */
-/* Standard Teal: #4DB6AC (Muted Teal for borders/shadows) */
-/* Light Background: #E0F2F1 (Very Light Teal/Gradient Start) */
-
-/* ---------------------------------------------------- */
-/* --- 1. GLOBAL & LAYOUT --- */
-/* ---------------------------------------------------- */
-body{
-    margin:0;
-    padding:0;
-    font-family:'Poppins',Arial,sans-serif;
-    /* Consistent professional background gradient */
-    background:linear-gradient(135deg,#E0F2F1,#CFD8DC);
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:flex-start;
-    padding:40px 0;
+/* PREMIUM DARK GLASSMORPHISM PALETTE */
+:root {
+    --bg-dark: #0F172A;
+    --glass-bg: rgba(30, 41, 59, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --accent-glow: #38BDF8;
+    --accent-gradient: linear-gradient(135deg, #38BDF8, #818CF8);
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --success: #10B981;
+    --danger: #EF4444;
 }
 
-.container{
-    width:90%;
-    max-width:1400px;
-    /* White background for clean look */
-    background:rgba(255,255,255,0.98);
-    border-radius:16px; /* Consistent radius */
-    padding:40px;
-    box-shadow:0 12px 30px rgba(0,0,0,0.1);
-    backdrop-filter:blur(5px);
-    border:1px solid #CFD8DC; /* Light Grey/Cool Tone Border */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Outfit', sans-serif;
+    background: radial-gradient(circle at top left, #1E1B4B, var(--bg-dark));
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
 }
 
-/* ---------------------------------------------------- */
-/* --- 2. HEADER PROFILE --- */
-/* ---------------------------------------------------- */
-.profile-header{
-    background:white;
-    padding:30px;
-    border-radius:16px;
-    box-shadow:0 6px 20px rgba(0,0,0,0.08);
-    display:flex;
-    align-items:center;
-    gap:30px;
-    margin-bottom:40px;
-    border-left:5px solid #00796B; /* Deep Teal Accent Line */
+.container {
+    width: 90%;
+    max-width: 1200px;
 }
 
-.profile-header img{
-    width:100px; /* Consistent size with Doctor Dashboard */
-    height:100px;
-    border-radius:50%;
-    object-fit:cover;
-    box-shadow:0 4px 15px rgba(0,0,0,0.1);
-    border:4px solid #4DB6AC; /* Standard Teal ring */
+/* Header */
+.header-glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
 
-.profile-text h1{
-    margin:0;
-    color:#37474F; /* Dark Navy/Charcoal for primary text */
-    font-size:32px; /* Adjusted size */
-    font-weight:700;
-}
-.profile-text p{
-    margin-top:5px;
-    color:#78909C; /* Soft Grey for secondary text */
-    font-size:16px;
+.profile-info {
+    display: flex;
+    align-items: center;
+    gap: 25px;
 }
 
-/* ---------------------------------------------------- */
-/* --- 3. GRID CARDS --- */
-/* ---------------------------------------------------- */
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); /* Adjusted min size */
-    gap:25px; /* Consistent gap */
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--accent-gradient);
+    padding: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.card{
-    background:white;
-    padding:30px;
-    border-radius:16px;
-    box-shadow:0 4px 15px rgba(0,0,0,0.08);
-    transition:transform 0.3s,box-shadow 0.3s;
-    border-bottom:4px solid #4DB6AC; /* Standard Teal Underline */
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--bg-dark);
 }
 
-.card:hover{
-    transform:translateY(-4px); /* Consistent hover effect */
-    box-shadow:0 8px 20px rgba(0,0,0,0.12);
+.profile-text h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-.card img{
-    width:60px; /* Consistent icon size */
-    height:60px;
-    /* Filter to match icons to Deep Teal */
-    filter:invert(34%) sepia(85%) saturate(300%) hue-rotate(158deg) brightness(98%) contrast(90%); 
-    opacity:1;
+.profile-text p {
+    margin: 5px 0 0;
+    color: var(--text-secondary);
+    font-size: 16px;
 }
 
-.card h3{
-    margin:15px 0 8px 0;
-    color:#00796B; /* Deep Teal heading */
-    font-size:22px;
-    font-weight:600;
+.actions {
+    display: flex;
+    gap: 15px;
 }
 
-.card p{
-    color:#78909C;
-    font-size:15px;
-    margin:0;
-    font-weight:400;
+.btn {
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    font-family: 'Outfit', sans-serif;
 }
 
-/* ---------------------------------------------------- */
-/* --- 4. CASE DETAILS SECTION --- */
-/* ---------------------------------------------------- */
-.case-section{
-    margin-top:50px;
+.btn-primary {
+    background: var(--accent-gradient);
+    color: white;
+    box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(56, 189, 248, 0.6);
 }
 
-.section-title{
-    font-size:26px;
-    font-weight:700;
-    color:#37474F; /* Dark Navy/Charcoal title */
-    margin-bottom:20px;
-    border-bottom:2px solid #E0F2F1; /* Light separator */
-    padding-bottom:5px;
+.btn-danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+.btn-danger:hover {
+    background: var(--danger);
+    color: white;
 }
 
-.case-box{
-    background:white;
-    padding:30px;
-    border-radius:16px;
-    box-shadow:0 4px 15px rgba(0,0,0,0.08);
-    border:1px solid #CFD8DC;
+/* Grid Layout */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
 }
 
-.info-line{
-    margin-bottom:20px;
-    font-size:17px;
-    color:#263238; /* Darker Gray for value text */
-    display:flex;
-    flex-wrap:wrap;
-    border-bottom:1px dashed #CFD8DC;
-    padding-bottom:8px;
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transition: transform 0.3s;
+}
+.glass-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(56, 189, 248, 0.3);
 }
 
-.label{
-    font-weight:600;
-    color:#00796B; /* Deep Teal for labels */
-    min-width:200px; /* Consistent alignment */
+.card-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.empty-text{
-    padding:30px 0;
-    text-align:center;
-    color:#00796B;
-    font-style:italic;
-    font-size:18px;
-    opacity:0.9;
-    background:#E0F2F1; /* Very light teal background for emphasis */
-    border-radius:10px;
+/* Chart Container */
+.chart-container {
+    width: 100%;
+    height: 250px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-/* ---------------------------------------------------- */
-/* --- 5. LOGOUT BUTTON --- */
-/* ---------------------------------------------------- */
-.logout-btn{
-    padding:14px 25px;
-    /* Retaining strong red for UX/security, but updated style */
-    background:#E74C3C; 
-    color:white;
-    border:none;
-    border-radius:8px;
-    font-size:16px;
-    font-weight:600;
-    cursor:pointer;
-    float:right;
-    transition:0.3s;
-    box-shadow:0 4px 10px rgba(231, 76, 60, 0.3);
-    margin-top:30px;
-    letter-spacing:0.5px;
-}
-.logout-btn:hover{
-    background:#C0392B;
-    transform:translateY(-1px);
-    box-shadow:0 6px 12px rgba(231, 76, 60, 0.4);
+/* Info List */
+.info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
-/* ---------------------------------------------------- */
-/* --- 6. RESPONSIVE DESIGN --- */
-/* ---------------------------------------------------- */
-@media(max-width:800px){
-    .profile-header{
-        flex-direction:column;
-        text-align:center;
-        border-left:none;
-        border-top:5px solid #00796B;
-    }
-    .profile-header img{
-        margin-bottom:10px;
-    }
-    .container{
-        padding:25px;
-    }
-    .label{
-        min-width:100%;
-        margin-bottom:5px;
-    }
+.info-item {
+    background: rgba(0,0,0,0.2);
+    border-radius: 12px;
+    padding: 15px 20px;
+    border-left: 4px solid var(--accent-glow);
+}
+
+.info-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.info-value {
+    font-size: 16px;
+    color: var(--text-primary);
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+/* Status Badge */
+.status-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.status-new { background: rgba(245, 158, 11, 0.2); color: #FCD34D; border: 1px solid rgba(245, 158, 11, 0.4); }
+.status-predicted { background: rgba(56, 189, 248, 0.2); color: #7DD3FC; border: 1px solid rgba(56, 189, 248, 0.4); }
+.status-reviewed { background: rgba(16, 185, 129, 0.2); color: #6EE7B7; border: 1px solid rgba(16, 185, 129, 0.4); }
+
+.no-data {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 40px 0;
+    font-style: italic;
+}
+
+@media(max-width: 900px) {
+    .dashboard-grid { grid-template-columns: 1fr; }
+    .header-glass { flex-direction: column; gap: 20px; text-align: center; }
+    .profile-info { flex-direction: column; }
 }
 </style>
 </head>
-
 <body>
 
 <div class="container">
-
-    <div class="profile-header">
-        <img src="https://cdn-icons-png.flaticon.com/512/921/921347.png" alt="Patient Avatar">
-
-        <div class="profile-text">
-            <h1>Welcome to MediFusion</h1>
-            <p>Your secure dashboard to track AI analysis, doctor review, and final treatment plan.</p>
-        </div>
-    </div>
-
-    <div class="grid">
-
-        <div class="card">
-            <img src="https://cdn-icons-png.flaticon.com/512/2967/2967350.png" alt="Case Status Icon">
-            <h3>Case Status</h3>
-            <p>No active case submitted or in review.</p>
-        </div>
-
-        <div class="card">
-            <img src="https://cdn-icons-png.flaticon.com/512/3813/3813486.png" alt="AI Analysis Icon">
-            <h3>AI Analysis</h3>
-            <p>Preliminary AI result is currently unavailable.</p>
-        </div>
-
-        <div class="card">
-            <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Doctor Review Icon">
-            <h3>Doctor Review</h3>
-            <p>A specialist's diagnosis is pending review.</p>
-        </div>
-
-        <div class="card">
-            <img src="https://cdn-icons-png.flaticon.com/512/3050/3050525.png" alt="Lab Report Icon">
-            <h3>Lab Report</h3>
-            <p>Upload your latest diagnostic reports here.</p>
-        </div>
-
-    </div>
-
-    <div class="case-section">
-        <div class="section-title">Case Information & Treatment Plan</div>
-
-        <div class="case-box">
-
-            <div class="info-line"><span class="label">Symptoms Reported:</span> <span id="symptoms">—</span></div>
-
-            <div class="info-line"><span class="label">AI Preliminary Result:</span> <span id="aiResult">—</span></div>
-
-            <div class="info-line"><span class="label">Doctor's Comments:</span> <span id="docComments">—</span></div>
-
-            <div class="info-line"><span class="label">Final Diagnosis:</span> <span id="diagnosis">—</span></div>
-
-            <div class="info-line"><span class="label">Treatment Plan:</span> <span id="treatment">—</span></div>
-
-            <div class="empty-text">
-                <span style="font-weight:600;">No Active Case:</span> Please submit a new case or wait for the review process to begin.
+    <!-- Header -->
+    <div class="header-glass">
+        <div class="profile-info">
+            <div class="profile-avatar">
+                <img src="https://cdn-icons-png.flaticon.com/512/921/921347.png" alt="Patient">
             </div>
-
+            <div class="profile-text">
+                <h1>Patient Dashboard</h1>
+                <p>Welcome back! Here is your health analysis overview.</p>
+            </div>
         </div>
-
-        <button class="logout-btn" onclick="logout()">
-            <span style="margin-right:5px;">🚪</span> Logout Securely
-        </button>
-
+        <div class="actions">
+            <button class="btn btn-primary" onclick="window.location.href='submit_symptoms.html'">Submit New Case</button>
+            <button class="btn btn-danger" onclick="logout()">Logout</button>
+        </div>
     </div>
 
+    <!-- Main Grid -->
+    <div class="dashboard-grid">
+        
+        <!-- Case Details -->
+        <div class="glass-card">
+            <h3 class="card-title">🩺 Case Information</h3>
+            <div class="info-list" id="caseInfoContainer">
+                <div class="no-data">Loading your latest case...</div>
+            </div>
+        </div>
+
+        <!-- AI Visualization -->
+        <div class="glass-card">
+            <h3 class="card-title">🤖 AI Analysis Confidence</h3>
+            <div class="chart-container" id="chartWrapper">
+                <div class="no-data" id="chartFallback">No AI data to visualize yet.</div>
+                <canvas id="aiChart" style="display:none;"></canvas>
+            </div>
+        </div>
+
+        <!-- Doctor's Review -->
+        <div class="glass-card" style="grid-column: 1 / -1;">
+            <h3 class="card-title">👨‍⚕️ Doctor's Final Review</h3>
+            <div class="info-list" id="reviewContainer">
+                <div class="no-data">Pending doctor review...</div>
+            </div>
+        </div>
+
+    </div>
 </div>
 
-<script>
-    function logout(){
-    localStorage.clear();
-    window.location.href = "login.html";
-}
-
-</script>
 <script src="api.js"></script>
 <script src="patient.js"></script>
 <script>

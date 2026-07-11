@@ -3,38 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediFusion - Signup</title>
+    <title>MediFusion – Sign Up</title>
     <link rel="stylesheet" href="styles/auth.css">
 </head>
 
 <body>
-
 <div class="auth-container">
     <div class="auth-card">
 
-        <img src="assets/logo.png" class="logo" alt="MediFusion HealthCare">
+        <img src="https://cdn-icons-png.flaticon.com/512/4320/4320337.png" class="logo" alt="MediFusion">
 
-        <h2 class="title">Create Your Account</h2>
-        <p class="subtitle">Join MediFusion HealthCare</p>
+        <h2 class="title">Create Account</h2>
+        <p class="subtitle">Join MediFusion – AI-powered healthcare</p>
 
         <form id="signupForm" onsubmit="signupUser(event)">
 
-
             <input type="text" id="username" placeholder="Username" required>
-
             <input type="password" id="password" placeholder="Password" required>
-
             <input type="text" id="full_name" placeholder="Full Name" required>
 
-            <select id="role" class="dropdown" required>
+            <select id="role" required>
                 <option value="" disabled selected>Select Your Role</option>
                 <option value="patient">Patient</option>
                 <option value="doctor">Doctor</option>
-                <option value="lab">Lab</option>
+                <option value="lab">Lab Technician</option>
             </select>
 
-            <button class="btn-primary" type="submit">Signup</button>
+            <button class="btn-primary" type="submit">Sign Up</button>
         </form>
+
+        <div class="error-msg" id="signupError"></div>
 
         <p class="switch-text">
             Already have an account? <a href="login.html">Login</a>
@@ -43,19 +41,7 @@
     </div>
 </div>
 
-<script>
-    const res = await apiSignup(data);
-
-if(res.id){
-    alert("Signup Successful!");
-    window.location.href = "login.html";
-} else {
-    alert("Signup failed: " + res.detail);
-}
-
-</script>
 <script src="api.js"></script>
 <script src="signup.js"></script>
-
 </body>
 </html>

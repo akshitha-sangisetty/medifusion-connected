@@ -34,6 +34,9 @@ def get_latest_case(
             "symptoms": latest.symptoms,
             "ai_result": latest.symptom_result,
             "xray_result": latest.xray_result,
-            "status": latest.status
+            "status": latest.status,
+            "doctor_notes": latest.doctor_notes,
+            "final_diagnosis": latest.final_diagnosis,
+            "treatment_plan": latest.treatment_plan
         }
     }

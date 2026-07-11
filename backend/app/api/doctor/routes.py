@@ -19,7 +19,8 @@ def get_assigned_cases(
     if current_user.role != "doctor":
         raise HTTPException(status_code=403, detail="Not a doctor")
 
-    cases = db.query(Case).filter(Case.doctor_id == current_user.id).all()
+    # Fetch cases that have been processed by AI or are waiting for review
+    cases = db.query(Case).filter(Case.status != "new").order_by(Case.id.desc()).all()
     return {"cases": cases}
 
 
@@ -38,8 +39,12 @@ def submit_review(
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
 
-    case.doctor_comments = data.get("notes", "")
+    case.doctor_notes = data.get("notes", "")
+    case.treatment_plan = data.get("tests", "")
+    case.final_diagnosis = data.get("diag", "")
     case.status = "reviewed"
     db.commit()
+
+    return {"message": "Review submitted successfully"}
 
     return {"message": "Review submitted successfully"}

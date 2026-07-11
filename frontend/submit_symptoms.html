@@ -2,216 +2,182 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Submit Symptoms – MediCare Pro</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submit Symptoms – MediFusion Premium</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-/* PROFESSIONAL TEAL COLOR PALETTE */
-/* Primary Teal: #00796B (Deep Teal/Medical Green) */
-/* Secondary Teal: #4DB6AC (Standard Teal) */
-/* Light Accent: #E0F2F1 (Very Light Teal) */
-/* Text/Detail: #424242 */
-
-body{
-  margin:0;padding:0;
-  font-family: 'Poppins', Arial, sans-serif;
-  /* Soft, professional gradient background using teal accents */
-  background: linear-gradient(135deg, #E0F2F1, #B2DFDB); 
-  display:flex;justify-content:center;align-items:center;
-  height:100vh;
-}
-.wrapper{
-  width:90%;max-width:1100px;height:85vh;
-  /* White background with slight transparency for depth */
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 16px; /* Slightly reduced border radius */
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  display:flex;overflow:hidden;
-  backdrop-filter: blur(8px);
-}
-.left{
-  width:50%;
-  /* Solid professional teal background */
-  background: #00796B; 
-  display:flex;justify-content:center;align-items:center;
-  position:relative;
-  /* Added a professional curve/shape for style */
-  clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%); 
+/* PREMIUM DARK GLASSMORPHISM PALETTE */
+:root {
+    --bg-dark: #0F172A;
+    --glass-bg: rgba(30, 41, 59, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --accent-glow: #38BDF8;
+    --accent-gradient: linear-gradient(135deg, #38BDF8, #818CF8);
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
 }
 
-/* IMAGE AND ANIMATION (Kept to maintain modern feel) */
-.left img.main{
-  width:70%;max-width:300px; /* Reduced size for elegance */
-  animation: float 4s infinite ease-in-out;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3)); /* Added shadow to white icon */
-}
-@keyframes float{
-  0%{transform:translateY(0);}
-  50%{transform:translateY(-14px);}
-  100%{transform:translateY(0);}
-}
-
-/* Minimal professional icons */
-.icon{
-  position:absolute;
-  opacity:0.2; /* Increased opacity for visibility on dark teal background */
-  filter: invert(1); /* Made icons white for contrast */
-}
-.i1{top:45px;right:40px;width:120px;}
-.i2{bottom:50px;left:60px;width:110px;}
-.i3{bottom:45%;right:60px;width:80px;}
-
-.right{
-  width:50%;padding:40px;
-  display:flex;flex-direction:column;justify-content:center;
-}
-.card{
-  background: #FFFFFF; /* Pure white card for cleanliness */
-  padding:35px;border-radius:12px; /* Smaller radius for sharper, cleaner look */
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
-  border: 1px solid #E0E0E0;
-}
-h2{
-  text-align:center;
-  color: #4DB6AC; /* Standard teal heading */
-  font-size:32px; /* Larger heading */
-  margin-bottom: 5px;
-  font-weight: 600;
-}
-.subtitle{
-  text-align:center;
-  color:#607D8B; /* Professional grey subtitle */
-  margin-bottom:25px;
-  font-size: 16px;
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Outfit', sans-serif;
+    background: radial-gradient(circle at top left, #1E1B4B, var(--bg-dark));
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-/* FORM ELEMENTS */
-.input-box{
-  width:100%;padding:14px;border-radius:8px;
-  margin-bottom:15px;font-size:16px;
-  border:1px solid #CFD8DC; /* Subtle grey border */
-  color: #424242;
-  box-sizing: border-box; /* Ensures padding is included in the width */
-  resize: vertical; /* Allow resizing for textarea */
-}
-.input-box:focus{
-  outline:none;
-  border-color: #4DB6AC; /* Primary teal focus color */
-  box-shadow:0 0 8px rgba(77, 182, 172, 0.4);
+.wrapper {
+    width: 90%;
+    max-width: 900px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    display: flex;
+    overflow: hidden;
 }
 
-button{
-  width:100%;padding:16px;
-  border:none;
-  background: #4DB6AC; /* Standard teal button */
-  border-radius:8px;
-  color:white;
-  font-size:18px;
-  font-weight: 600;
-  cursor:pointer;transition:0.3s;
-  letter-spacing: 0.5px;
-}
-button:hover{
-  transform: scale(1.01);
-  background: #00796B; /* Darker teal on hover */
+.left {
+    width: 45%;
+    background: rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
 }
 
-/* FEEDBACK MESSAGES (Kept green/red for status standard) */
-.success,.error{
-  margin-top:15px;padding:12px;border-radius:8px;display:none;
-  font-weight: 500;
+.left img {
+    width: 100%;
+    max-width: 250px;
+    animation: float 4s infinite ease-in-out;
+    filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.4));
 }
-.success{background:#E8F5E9;color:#2E7D32;border: 1px solid #A5D6A7;}
-.error{background:#FFEBEE;color:#C62828;border: 1px solid #EF9A9A;}
 
-/* MOBILE/RESPONSIVENESS */
-@media(max-width:900px){
-  .wrapper{flex-direction:column;height:auto;min-height:100vh;}
-  .left{width:100%;height: 200px; clip-path: none;} /* Simplifies the left side on mobile */
-  .right{width:100%;padding: 30px 20px;}
-  .left img.main{width: 150px; max-width: 150px;}
-  .icon{display: none;} /* Hides background icons on small screens */
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+    100% { transform: translateY(0); }
+}
+
+.right {
+    width: 55%;
+    padding: 50px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+h2 {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 700;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 16px;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+.input-box {
+    width: 100%;
+    padding: 15px 20px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-size: 15px;
+    font-family: 'Outfit', sans-serif;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.input-box:focus {
+    outline: none;
+    border-color: var(--accent-glow);
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+    background: rgba(0,0,0,0.3);
+}
+
+.input-box::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+button {
+    width: 100%;
+    padding: 16px;
+    background: var(--accent-gradient);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+    letter-spacing: 0.5px;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(56, 189, 248, 0.6);
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+    box-shadow: none;
+    margin-top: 15px;
+}
+
+.btn-secondary:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: var(--text-primary);
+    color: var(--text-primary);
+    box-shadow: none;
+}
+
+@media(max-width: 900px) {
+    .wrapper { flex-direction: column; width: 95%; border-radius: 20px; }
+    .left { width: 100%; padding: 30px; display: none; /* hide image on mobile */ }
+    .right { width: 100%; padding: 30px; }
 }
 </style>
 </head>
-
 <body>
 
 <div class="wrapper">
-  <div class="left">
-    <img class="main" src="https://cdn-icons-png.flaticon.com/512/2966/2966327.png" alt="Medical Icon">
-
-    <img class="icon i1" src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png" alt="Icon">
-    <img class="icon i2" src="https://cdn-icons-png.flaticon.com/512/3081/3081419.png" alt="Icon">
-    <img class="icon i3" src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png" alt="Icon">
-  </div>
-
-  <div class="right">
-    <div class="card">
-      <h2>Submit Your Symptoms</h2>
-      <p class="subtitle">Securely share your concerns. We'll connect you with a specialist.</p>
-
-      <input id="sym" class="input-box" placeholder="Briefly state your main symptoms (e.g., severe headache, persistent cough)" required>
-      <textarea id="desc" class="input-box" rows="5" placeholder="Detailed description: When did it start? What makes it better or worse? (Optional)" ></textarea>
-
-      <button onclick="submitSymptoms()">SUBMIT CASE</button>
-
-      <div id="suc" class="success">Case successfully submitted!</div>
-      <div id="err" class="error"></div>
+    <div class="left">
+        <img src="https://cdn-icons-png.flaticon.com/512/2966/2966327.png" alt="Medical Icon">
     </div>
-  </div>
+
+    <div class="right">
+        <h2>Submit Symptoms</h2>
+        <p class="subtitle">Securely share your health concerns. Our AI will analyze them, and a specialist will review your case.</p>
+
+        <input id="sym" class="input-box" placeholder="Main symptoms (e.g., severe headache, fever)" required>
+        <textarea id="desc" class="input-box" rows="4" placeholder="Detailed description: When did it start? What makes it better or worse? (Optional)"></textarea>
+
+        <button onclick="submitSymptoms()">Submit to AI & Doctor</button>
+        <button class="btn-secondary" onclick="window.location.href='patient_dashboard.html'">Cancel & Return</button>
+    </div>
 </div>
 
-<script>
-function submitCase(){
-  let s=document.getElementById("sym").value.trim();
-  let suc=document.getElementById("suc");
-  let err=document.getElementById("err");
-  let desc = document.getElementById("desc").value.trim();
-
-  // Reset messages
-  suc.style.display="none";
-  err.style.display="none";
-
-  // Client-side validation
-  if(s===""){
-    err.innerHTML="*Please enter your main symptoms* to proceed.";
-    err.style.display="block";
-    return;
-  }
-
-  // Simulate API call and success response
-  // In a real application, you would send the 's' and 'desc' data to a server
-  setTimeout(() => {
-    // Generate a mock Case ID
-    const caseId = "CASE" + Math.floor(Math.random() * 90000 + 10000);
-    
-    // Display success message
-    suc.innerHTML="✅ Case submitted successfully! Your tracking ID is: <b>" + caseId + "</b>. A medical professional will review your submission shortly.";
-    suc.style.display="block";
-    
-    // Clear form fields on success
-    document.getElementById("sym").value = "";
-    document.getElementById("desc").value = "";
-
-  }, 500); // Simulate network delay
-}
-async function submitCase(){
-  const token = localStorage.getItem("token");
-
-  const symptoms = [document.getElementById("sym").value];
-
-  const result = await apiSubmitSymptoms(token, symptoms);
-
-  if(result.prediction){
-      document.getElementById("suc").innerHTML =
-        "Prediction: " + result.prediction.label +
-        " (prob: " + result.prediction.prob + ")";
-      document.getElementById("suc").style.display="block";
-  }
-}
-
-</script>
 <script src="api.js"></script>
 <script src="patient.js"></script>
 

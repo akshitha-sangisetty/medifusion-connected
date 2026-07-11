@@ -37,11 +37,10 @@ async function loginUser(event) {
         console.log("Login Response:", data);
 
         if (data.access_token) {
-            // Save JWT token
+            // Save JWT token and user info
             localStorage.setItem("token", data.access_token);
-
-            // Save role for routing
             localStorage.setItem("role", role);
+            localStorage.setItem("username", username);
 
             // Redirect based on role
             if (role === "patient") {
@@ -53,11 +52,15 @@ async function loginUser(event) {
             }
 
         } else {
-            alert("Invalid login credentials.");
+            const errEl = document.getElementById("loginError");
+            if (errEl) { errEl.textContent = "Invalid username or password."; errEl.style.display = "block"; }
+            else { alert("Invalid login credentials."); }
         }
 
     } catch (err) {
         console.error(err);
-        alert("Unable to login. Backend may be offline.");
+        const errEl = document.getElementById("loginError");
+        if (errEl) { errEl.textContent = "Unable to connect to backend. Please try again."; errEl.style.display = "block"; }
+        else { alert("Unable to login. Backend may be offline."); }
     }
 }

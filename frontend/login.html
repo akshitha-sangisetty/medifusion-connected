@@ -1,47 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>python -m uvicorn app.main:app --reload
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediFusion - Login</title>
+    <title>MediFusion – Login</title>
     <link rel="stylesheet" href="styles/auth.css">
 </head>
 
 <body>
-
 <div class="auth-container">
     <div class="auth-card">
 
-        <img src="assets/logo.png" class="logo" alt="MediFusion HealthCare">
+        <img src="https://cdn-icons-png.flaticon.com/512/4320/4320337.png" class="logo" alt="MediFusion">
 
-        <h2 class="title">Welcome to MediFusion</h2>
-        <p class="subtitle">Your health, our priority</p>
+        <h2 class="title">Welcome Back</h2>
+        <p class="subtitle">Sign in to access your MediFusion dashboard</p>
 
         <form id="loginForm" onsubmit="loginUser(event)">
-
             <input type="text" id="username" placeholder="Username" required>
             <input type="password" id="password" placeholder="Password" required>
 
-            <select id="role" required style="padding:10px;border-radius:6px;border:1px solid #ccc;">
-<option value="">Select Role</option>
-<option value="patient">Patient</option>
-<option value="doctor">Doctor</option>
-<option value="lab">Lab Technician</option>
-</select><br><br><button class="btn-primary" type="submit">Login</button>
+            <select id="role" required>
+                <option value="">Select Your Role</option>
+                <option value="patient">Patient</option>
+                <option value="doctor">Doctor</option>
+                <option value="lab">Lab Technician</option>
+            </select>
+
+            <button class="btn-primary" type="submit">Login</button>
         </form>
 
+        <div class="error-msg" id="loginError"></div>
+
         <p class="switch-text">
-            Don’t have an account? <a href="signup.html">Sign up</a>
+            Don't have an account? <a href="signup.html">Sign up</a>
         </p>
 
     </div>
 </div>
 
-
-<script src="api.js"></script>
-
 <script src="api.js"></script>
 <script src="login.js"></script>
-
-
-</body></html>
+</body>
+</html>

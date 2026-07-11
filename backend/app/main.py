@@ -11,7 +11,8 @@ from app.api.auth.routes import router as auth_router, get_current_user
 from app.models.user import User
 from app.models.base import Base
 from app.core.database import engine, get_db
-from app.api.patient.routes import router as patient_router   #  <-- ADD THIS
+from app.api.patient.routes import router as patient_router
+from app.api.predict.routes import router as predict_router
 
 from app.redis_client import redis_client
 from app.api.lab.routes import router as lab_router
@@ -29,6 +30,7 @@ app = FastAPI(title="MediFusion Backend")
 app.include_router(lab_router)
 app.include_router(patient_router) 
 app.include_router(doctor_router)
+app.include_router(predict_router)
 # ---------------------------
 # CORS configuration
 # ---------------------------
