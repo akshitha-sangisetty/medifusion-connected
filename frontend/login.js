@@ -2,7 +2,7 @@
 // login.js — Full Authentication Logic
 // =====================================================
 
-const API_URL_PROD = "https://medifusion-api-11yd.onrender.com"; const API = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? "http://localhost:8000" : API_URL_PROD; const API_BASE = API;
+
 
 // -------------------------------
 // 🔹 Login function
@@ -25,7 +25,7 @@ async function loginUser(event) {
     body.append("password", password);
 
     try {
-        const res = await fetch(`${API}/auth/login`, {
+        const res = await fetch(`${API_BASE}/auth/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"

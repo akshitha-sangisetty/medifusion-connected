@@ -2,7 +2,7 @@
 // patient.js — Patient Dashboard + Submit Symptoms + Upload
 // =======================================================
 
-const API_URL_PROD = "https://medifusion-api-11yd.onrender.com"; const API = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? "http://localhost:8000" : API_URL_PROD; const API_BASE = API;
+
 
 // ----------------------------------
 // 🔑 Get authentication token
@@ -34,7 +34,7 @@ async function submitSymptoms() {
     if (desc) symptomsList.push(desc);
 
     try {
-        const res = await fetch(`${API}/predict/symptoms`, {
+        const res = await fetch(`${API_BASE}/predict/symptoms`, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${token}`,
@@ -80,7 +80,7 @@ async function uploadImage() {
     form.append("file", fileInput.files[0]);
 
     try {
-        const res = await fetch(`${API}/predict/image`, {
+        const res = await fetch(`${API_BASE}/predict/image`, {
             method: "POST",
             headers: { "Authorization": `Bearer ${token}` },
             body: form
@@ -115,7 +115,7 @@ async function loadPatientCase() {
     }
 
     try {
-        const res = await fetch(`${API}/predict/case/${caseId}`, {
+        const res = await fetch(`${API_BASE}/predict/case/${caseId}`, {
             headers: { "Authorization": `Bearer ${token}` }
         });
 

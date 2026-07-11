@@ -2,7 +2,7 @@
 // doctor.js  —  Handles all Doctor Dashboard + Review Page
 // =======================================================
 
-const API_URL_PROD = "https://medifusion-api-11yd.onrender.com"; const API = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? "http://localhost:8000" : API_URL_PROD; const API_BASE = API;
+
 
 // ------------------------------
 // 1️⃣ Get Token
@@ -23,7 +23,7 @@ async function loadAssignedCases() {
     }
 
     try {
-        const res = await fetch(`${API}/doctor/assigned`, {
+        const res = await fetch(`${API_BASE}/doctor/assigned`, {
             headers: { "Authorization": `Bearer ${token}` }
         });
 
@@ -80,7 +80,7 @@ async function loadCaseForReview() {
     }
 
     try {
-        const res = await fetch(`${API}/predict/case/${caseId}`, {
+        const res = await fetch(`${API_BASE}/predict/case/${caseId}`, {
             headers: { "Authorization": `Bearer ${token}` }
         });
 
@@ -114,7 +114,7 @@ async function submitReview() {
     }
 
     try {
-        const res = await fetch(`${API}/doctor/review/${caseId}`, {
+        const res = await fetch(`${API_BASE}/doctor/review/${caseId}`, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${token}`,

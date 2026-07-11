@@ -2,7 +2,7 @@
 // signup.js — Full Signup Integration
 // =====================================================
 
-const API_URL_PROD = "https://medifusion-api-11yd.onrender.com"; const API = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? "http://localhost:8000" : API_URL_PROD; const API_BASE = API;
+
 
 // -------------------------------
 // 🔹 Signup Function
@@ -28,7 +28,7 @@ async function signupUser(event) {
     };
 
     try {
-        const res = await fetch(`${API}/auth/register`, {
+        const res = await fetch(`${API_BASE}/auth/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
