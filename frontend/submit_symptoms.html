@@ -170,11 +170,13 @@ button:hover {
         <h2>Submit Symptoms</h2>
         <p class="subtitle">Securely share your health concerns. Our AI will analyze them, and a specialist will review your case.</p>
 
-        <input id="sym" class="input-box" placeholder="Main symptoms (e.g., severe headache, fever)" required>
-        <textarea id="desc" class="input-box" rows="4" placeholder="Detailed description: When did it start? What makes it better or worse? (Optional)"></textarea>
+        <input id="symInput" class="input-box" placeholder="Main symptoms (e.g., severe headache, fever)" required>
+        <textarea id="descInput" class="input-box" rows="4" placeholder="Detailed description: When did it start? What makes it better or worse? (Optional)"></textarea>
 
-        <button onclick="submitSymptoms()">Submit to AI & Doctor</button>
-        <button class="btn-secondary" onclick="window.location.href='patient_dashboard.html'">Cancel & Return</button>
+        <div id="submitMsg" style="display:none; margin-bottom:12px;"></div>
+
+        <button id="submitBtn" onclick="submitCase()">Submit to AI &amp; Doctor</button>
+        <button class="btn-secondary" onclick="window.location.href='patient_dashboard.html'">Cancel &amp; Return</button>
     </div>
 </div>
 

@@ -1,25 +1,30 @@
 // =====================================================
-// login.js — Full Authentication Logic
+// login.js — Full Authentication Logic (Fixed)
 // =====================================================
 
-
-
-// -------------------------------
-// 🔹 Login function
-// -------------------------------
 async function loginUser(event) {
     event.preventDefault();
 
     const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value.trim();
     const role = document.getElementById("role").value;
+    const errEl = document.getElementById("loginError");
+    const successEl = document.getElementById("loginSuccess");
+    const btn = document.getElementById("loginBtn");
+
+    errEl.style.display = "none";
+    successEl.style.display = "none";
 
     if (!username || !password || !role) {
-        alert("Please fill all fields including role.");
+        errEl.textContent = "Please fill in all fields including your role.";
+        errEl.style.display = "block";
         return;
     }
 
-    // Create x-www-form-urlencoded body as backend expects
+    // Show loading state
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Signing in...';
+
     const body = new URLSearchParams();
     body.append("username", username);
     body.append("password", password);
@@ -27,9 +32,7 @@ async function loginUser(event) {
     try {
         const res = await fetch(`${API_BASE}/auth/login`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            },
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body
         });
 
@@ -37,30 +40,60 @@ async function loginUser(event) {
         console.log("Login Response:", data);
 
         if (data.access_token) {
-            // Save JWT token and user info
-            localStorage.setItem("token", data.access_token);
-            localStorage.setItem("role", role);
-            localStorage.setItem("username", username);
-
-            // Redirect based on role
-            if (role === "patient") {
-                window.location.href = "patient_dashboard.html";
-            } else if (role === "doctor") {
-                window.location.href = "doctor_dashboard.html";
-            } else if (role === "lab") {
-                window.location.href = "lab_dashboard.html";
+            // ── Verify the actual role from the backend ──
+            let actualRole = null;
+            try {
+                const meRes = await fetch(`${API_BASE}/auth/me`, {
+                    headers: { "Authorization": `Bearer ${data.access_token}` }
+                });
+                const meData = await meRes.json();
+                actualRole = meData.role;
+            } catch (e) {
+                // If /auth/me fails, trust the role the user selected
+                actualRole = role;
             }
 
+            if (actualRole && actualRole !== role) {
+                errEl.textContent = `You registered as "${actualRole}" but selected "${role}". Please select the correct role.`;
+                errEl.style.display = "block";
+                btn.disabled = false;
+                btn.innerHTML = "Sign In to Dashboard";
+                return;
+            }
+
+            // Save credentials
+            localStorage.setItem("token", data.access_token);
+            localStorage.setItem("role", actualRole || role);
+            localStorage.setItem("username", username);
+
+            successEl.textContent = "✅ Login successful! Redirecting...";
+            successEl.style.display = "block";
+
+            // Redirect based on role
+            setTimeout(() => {
+                if (actualRole === "patient" || role === "patient") {
+                    window.location.href = "patient_dashboard.html";
+                } else if (actualRole === "doctor" || role === "doctor") {
+                    window.location.href = "doctor_dashboard.html";
+                } else if (actualRole === "lab" || role === "lab") {
+                    window.location.href = "lab_dashboard.html";
+                } else {
+                    window.location.href = "patient_dashboard.html";
+                }
+            }, 800);
+
         } else {
-            const errEl = document.getElementById("loginError");
-            if (errEl) { errEl.textContent = "Invalid username or password."; errEl.style.display = "block"; }
-            else { alert("Invalid login credentials."); }
+            errEl.textContent = data.detail || "Invalid username or password. Please try again.";
+            errEl.style.display = "block";
+            btn.disabled = false;
+            btn.innerHTML = "Sign In to Dashboard";
         }
 
     } catch (err) {
         console.error(err);
-        const errEl = document.getElementById("loginError");
-        if (errEl) { errEl.textContent = "Unable to connect to backend. Please try again."; errEl.style.display = "block"; }
-        else { alert("Unable to login. Backend may be offline."); }
+        errEl.textContent = "Unable to connect to the server. Please check your internet connection.";
+        errEl.style.display = "block";
+        btn.disabled = false;
+        btn.innerHTML = "Sign In to Dashboard";
     }
 }

@@ -1,42 +1,384 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediFusion – Login</title>
-    <link rel="stylesheet" href="styles/auth.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediFusion – Login</title>
+<meta name="description" content="Login to MediFusion – AI-powered healthcare platform">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #060d1f;
+  --glass: rgba(15, 23, 42, 0.85);
+  --border: rgba(99, 179, 237, 0.18);
+  --accent: #38BDF8;
+  --accent2: #818CF8;
+  --gradient: linear-gradient(135deg, #38BDF8, #818CF8);
+  --text: #F1F5F9;
+  --muted: #94A3B8;
+  --danger: #F87171;
+  --success: #34D399;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Animated background */
+.bg-orbs {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.2;
+  animation: orbFloat 12s ease-in-out infinite;
+}
+.orb1 { width: 500px; height: 500px; background: #818CF8; top: -150px; left: -100px; }
+.orb2 { width: 400px; height: 400px; background: #38BDF8; bottom: -100px; right: -100px; animation-delay: -6s; animation-direction: reverse; }
+.orb3 { width: 300px; height: 300px; background: #34D399; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: -3s; }
+
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(30px, 20px); }
+}
+
+/* Grid overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(99,179,237,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,179,237,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page-wrap {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 20px;
+}
+
+/* Split layout */
+.auth-split {
+  display: flex;
+  max-width: 900px;
+  width: 100%;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px var(--border);
+}
+
+/* Left panel */
+.auth-left {
+  flex: 1;
+  background: linear-gradient(145deg, rgba(56,189,248,0.12), rgba(129,140,248,0.12));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  border-right: 1px solid var(--border);
+  position: relative;
+}
+.auth-left-logo {
+  font-size: 48px;
+  margin-bottom: 20px;
+  animation: pulse 3s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+.auth-left h1 {
+  font-size: 32px;
+  font-weight: 800;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  margin-bottom: 12px;
+}
+.auth-left p {
+  color: var(--muted);
+  font-size: 15px;
+  text-align: center;
+  line-height: 1.6;
+  max-width: 240px;
+}
+.feature-list {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  font-size: 14px;
+  color: var(--muted);
+}
+.feature-icon { font-size: 20px; }
+
+/* Right panel */
+.auth-right {
+  flex: 1;
+  background: var(--glass);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  padding: 60px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth-right h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.auth-right .tagline {
+  color: var(--muted);
+  font-size: 15px;
+  margin-bottom: 36px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 8px;
+}
+.form-input {
+  width: 100%;
+  padding: 14px 18px;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  font-size: 15px;
+  font-family: 'Outfit', sans-serif;
+  transition: all 0.3s;
+}
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
+  background: rgba(0,0,0,0.35);
+}
+.form-input::placeholder { color: #4B5563; }
+select.form-input { cursor: pointer; }
+select.form-input option { background: #1E293B; color: var(--text); }
+
+.btn-login {
+  width: 100%;
+  padding: 16px;
+  background: var(--gradient);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 24px rgba(56,189,248,0.4);
+  transition: all 0.3s;
+  margin-top: 8px;
+  position: relative;
+  overflow: hidden;
+}
+.btn-login::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.15);
+  transform: translateX(-100%);
+  transition: transform 0.4s;
+}
+.btn-login:hover::after { transform: translateX(100%); }
+.btn-login:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(56,189,248,0.55);
+}
+.btn-login:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.error-box {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: rgba(248,113,113,0.12);
+  border: 1px solid rgba(248,113,113,0.3);
+  border-radius: 10px;
+  color: var(--danger);
+  font-size: 14px;
+  display: none;
+}
+.success-box {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: rgba(52,211,153,0.12);
+  border: 1px solid rgba(52,211,153,0.3);
+  border-radius: 10px;
+  color: var(--success);
+  font-size: 14px;
+  display: none;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0;
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.divider span { color: var(--muted); font-size: 13px; }
+
+.switch-link {
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+}
+.switch-link a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+.switch-link a:hover { text-decoration: underline; }
+
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 700px) {
+  .auth-split { flex-direction: column; border-radius: 20px; }
+  .auth-left { display: none; }
+  .auth-right { padding: 40px 30px; }
+}
+</style>
 </head>
-
 <body>
-<div class="auth-container">
-    <div class="auth-card">
+<div class="bg-orbs">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
 
-        <img src="https://cdn-icons-png.flaticon.com/512/4320/4320337.png" class="logo" alt="MediFusion">
-
-        <h2 class="title">Welcome Back</h2>
-        <p class="subtitle">Sign in to access your MediFusion dashboard</p>
-
-        <form id="loginForm" onsubmit="loginUser(event)">
-            <input type="text" id="username" placeholder="Username" required>
-            <input type="password" id="password" placeholder="Password" required>
-
-            <select id="role" required>
-                <option value="">Select Your Role</option>
-                <option value="patient">Patient</option>
-                <option value="doctor">Doctor</option>
-                <option value="lab">Lab Technician</option>
-            </select>
-
-            <button class="btn-primary" type="submit">Login</button>
-        </form>
-
-        <div class="error-msg" id="loginError"></div>
-
-        <p class="switch-text">
-            Don't have an account? <a href="signup.html">Sign up</a>
-        </p>
-
+<div class="page-wrap">
+  <div class="auth-split">
+    <!-- Left Panel -->
+    <div class="auth-left">
+      <div class="auth-left-logo">🏥</div>
+      <h1>MediFusion</h1>
+      <p>AI-powered healthcare connecting patients, doctors, and labs seamlessly.</p>
+      <div class="feature-list">
+        <div class="feature-item">
+          <span class="feature-icon">🤖</span>
+          <span>AI Symptom Analysis</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">👨‍⚕️</span>
+          <span>Expert Doctor Review</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">⚡</span>
+          <span>Real-time Notifications</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">🔒</span>
+          <span>Secure & Private</span>
+        </div>
+      </div>
     </div>
+
+    <!-- Right Panel (Form) -->
+    <div class="auth-right">
+      <h2>Welcome Back</h2>
+      <p class="tagline">Sign in to your MediFusion account</p>
+
+      <form id="loginForm" onsubmit="loginUser(event)">
+        <div class="form-group">
+          <label class="form-label" for="username">Username</label>
+          <input id="username" type="text" class="form-input" placeholder="Enter your username" required autocomplete="username">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input id="password" type="password" class="form-input" placeholder="Enter your password" required autocomplete="current-password">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="role">Role</label>
+          <select id="role" class="form-input" required>
+            <option value="">Select your role</option>
+            <option value="patient">🧑‍🦽 Patient</option>
+            <option value="doctor">👨‍⚕️ Doctor</option>
+            <option value="lab">🔬 Lab Technician</option>
+          </select>
+        </div>
+
+        <div id="loginError" class="error-box"></div>
+        <div id="loginSuccess" class="success-box"></div>
+
+        <button id="loginBtn" class="btn-login" type="submit">Sign In to Dashboard</button>
+      </form>
+
+      <div class="divider"><span>New to MediFusion?</span></div>
+      <div class="switch-link">
+        Don't have an account? <a href="signup.html">Create one now →</a>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="api.js"></script>

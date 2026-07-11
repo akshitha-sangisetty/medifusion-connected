@@ -3,286 +3,618 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Patient Dashboard – MediFusion Premium</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>Patient Dashboard – MediFusion</title>
+<meta name="description" content="Patient Dashboard – View your health analysis and doctor reviews on MediFusion">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-
 <style>
-/* PREMIUM DARK GLASSMORPHISM PALETTE */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
 :root {
-    --bg-dark: #0F172A;
-    --glass-bg: rgba(30, 41, 59, 0.7);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --accent-glow: #38BDF8;
-    --accent-gradient: linear-gradient(135deg, #38BDF8, #818CF8);
-    --text-primary: #F8FAFC;
-    --text-secondary: #94A3B8;
-    --success: #10B981;
-    --danger: #EF4444;
+  --bg: #060d1f;
+  --sidebar: rgba(10,18,38,0.98);
+  --glass: rgba(15,23,42,0.75);
+  --border: rgba(99,179,237,0.14);
+  --accent: #38BDF8;
+  --accent2: #818CF8;
+  --gradient: linear-gradient(135deg, #38BDF8, #818CF8);
+  --text: #F1F5F9;
+  --muted: #94A3B8;
+  --success: #34D399;
+  --danger: #F87171;
+  --warn: #FBBF24;
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Outfit', sans-serif;
-    background: radial-gradient(circle at top left, #1E1B4B, var(--bg-dark));
-    color: var(--text-primary);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 40px 0;
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
 }
 
-.container {
-    width: 90%;
-    max-width: 1200px;
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 260px;
+  min-width: 260px;
+  background: var(--sidebar);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: sticky;
+  top: 0;
 }
 
-/* Header */
-.header-glass {
-    background: var(--glass-bg);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--glass-border);
-    border-radius: 24px;
-    padding: 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 40px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+.sidebar-brand {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.brand-name {
+  font-size: 20px;
+  font-weight: 800;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.brand-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+.user-badge {
+  margin: 16px 24px;
+  padding: 14px;
+  background: rgba(56,189,248,0.07);
+  border: 1px solid rgba(56,189,248,0.18);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.user-avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: var(--gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.user-name { font-size: 14px; font-weight: 600; color: var(--text); }
+.user-role { font-size: 12px; color: var(--accent); }
+
+.nav-section {
+  padding: 16px 16px 0;
+  flex: 1;
+}
+.nav-label {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  padding: 0 8px;
+  margin-bottom: 8px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+  margin-bottom: 4px;
+  border: 1px solid transparent;
+}
+.nav-item:hover {
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+}
+.nav-item.active {
+  background: rgba(56,189,248,0.12);
+  border-color: rgba(56,189,248,0.25);
+  color: var(--accent);
+}
+.nav-icon { font-size: 18px; }
+
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+}
+.btn-logout {
+  width: 100%;
+  padding: 11px;
+  background: rgba(248,113,113,0.08);
+  border: 1px solid rgba(248,113,113,0.25);
+  border-radius: 10px;
+  color: var(--danger);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Outfit', sans-serif;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.btn-logout:hover { background: var(--danger); color: white; }
+
+/* ── MAIN ── */
+.main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 36px 40px;
+  background: radial-gradient(ellipse at top right, rgba(56,189,248,0.04) 0%, transparent 60%),
+              radial-gradient(ellipse at bottom left, rgba(129,140,248,0.04) 0%, transparent 60%);
 }
 
-.profile-info {
-    display: flex;
-    align-items: center;
-    gap: 25px;
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
 }
-
-.profile-avatar {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: var(--accent-gradient);
-    padding: 3px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.main-header h1 {
+  font-size: 28px;
+  font-weight: 800;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
-
-.profile-avatar img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    background: var(--bg-dark);
-}
-
-.profile-text h1 {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 700;
-    background: var(--accent-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.profile-text p {
-    margin: 5px 0 0;
-    color: var(--text-secondary);
-    font-size: 16px;
-}
-
-.actions {
-    display: flex;
-    gap: 15px;
-}
-
-.btn {
-    padding: 12px 24px;
-    border-radius: 12px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: none;
-    font-family: 'Outfit', sans-serif;
-}
+.main-header p { color: var(--muted); font-size: 15px; margin-top: 4px; }
 
 .btn-primary {
-    background: var(--accent-gradient);
-    color: white;
-    box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+  padding: 12px 24px;
+  background: var(--gradient);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(56,189,248,0.35);
+  transition: all 0.25s;
+  white-space: nowrap;
 }
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(56, 189, 248, 0.6);
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(56,189,248,0.5); }
+
+/* ── LIVE TOAST ── */
+.live-toast {
+  display: none;
+  padding: 14px 20px;
+  background: rgba(52,211,153,0.12);
+  border: 1px solid rgba(52,211,153,0.35);
+  border-radius: 14px;
+  color: var(--success);
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  animation: slideDown 0.4s ease;
+}
+@keyframes slideDown {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
-.btn-danger {
-    background: rgba(239, 68, 68, 0.1);
-    color: var(--danger);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-}
-.btn-danger:hover {
-    background: var(--danger);
-    color: white;
-}
+/* ── TAB PANELS ── */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
 
-/* Grid Layout */
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
+/* ── STATS ROW ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  margin-bottom: 28px;
 }
+.stat-card {
+  background: var(--glass);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 22px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--gradient);
+}
+.stat-card:hover { transform: translateY(-4px); border-color: rgba(56,189,248,0.3); }
+.stat-icon { font-size: 28px; margin-bottom: 8px; }
+.stat-value { font-size: 26px; font-weight: 800; color: var(--text); line-height: 1; }
+.stat-label { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+/* ── GLASS CARDS ── */
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.card-full { grid-column: 1 / -1; }
 
 .glass-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(16px);
-    border: 1px solid var(--glass-border);
-    border-radius: 24px;
-    padding: 30px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    transition: transform 0.3s;
+  background: var(--glass);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px;
+  transition: border-color 0.2s;
 }
-.glass-card:hover {
-    transform: translateY(-5px);
-    border-color: rgba(56, 189, 248, 0.3);
-}
+.glass-card:hover { border-color: rgba(56,189,248,0.25); }
 
 .card-title {
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin: 0 0 20px 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
 }
 
-/* Chart Container */
-.chart-container {
-    width: 100%;
-    height: 250px;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Info List */
-.info-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
+/* ── INFO ITEMS ── */
 .info-item {
-    background: rgba(0,0,0,0.2);
-    border-radius: 12px;
-    padding: 15px 20px;
-    border-left: 4px solid var(--accent-glow);
+  background: rgba(0,0,0,0.2);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 12px;
+  border-left: 3px solid var(--accent);
 }
-
 .info-label {
-    font-size: 13px;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 5px;
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
 }
-
 .info-value {
-    font-size: 16px;
-    color: var(--text-primary);
-    font-weight: 500;
-    line-height: 1.5;
+  font-size: 15px;
+  color: var(--text);
+  font-weight: 500;
+  line-height: 1.5;
+  word-break: break-word;
 }
 
-/* Status Badge */
-.status-badge {
-    display: inline-block;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 600;
-    text-transform: uppercase;
+/* ── STATUS BADGES ── */
+.badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
-.status-new { background: rgba(245, 158, 11, 0.2); color: #FCD34D; border: 1px solid rgba(245, 158, 11, 0.4); }
-.status-predicted { background: rgba(56, 189, 248, 0.2); color: #7DD3FC; border: 1px solid rgba(56, 189, 248, 0.4); }
-.status-reviewed { background: rgba(16, 185, 129, 0.2); color: #6EE7B7; border: 1px solid rgba(16, 185, 129, 0.4); }
+.badge-new { background: rgba(251,191,36,0.15); color: #FBBF24; border: 1px solid rgba(251,191,36,0.35); }
+.badge-predicted { background: rgba(56,189,248,0.15); color: #7DD3FC; border: 1px solid rgba(56,189,248,0.35); }
+.badge-reviewed { background: rgba(52,211,153,0.15); color: #34D399; border: 1px solid rgba(52,211,153,0.35); }
 
-.no-data {
-    text-align: center;
-    color: var(--text-secondary);
-    padding: 40px 0;
-    font-style: italic;
+/* ── CHART ── */
+.chart-wrap {
+  width: 100%;
+  height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
-@media(max-width: 900px) {
-    .dashboard-grid { grid-template-columns: 1fr; }
-    .header-glass { flex-direction: column; gap: 20px; text-align: center; }
-    .profile-info { flex-direction: column; }
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+}
+.empty-state .empty-icon { font-size: 64px; opacity: 0.3; display: block; margin-bottom: 16px; }
+.empty-state p { color: var(--muted); font-size: 16px; margin-bottom: 20px; }
+
+/* ── LOADING ── */
+.loading-dots {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+.loading-dots span {
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: bounce 1.2s ease-in-out infinite;
+}
+.loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+/* ── HISTORY TABLE ── */
+.history-empty {
+  text-align: center;
+  padding: 40px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ── SUBMIT FORM (Quick Submit) ── */
+.form-group-inline { margin-bottom: 18px; }
+.form-label-sm {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 8px;
+}
+.form-input-sm {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: 'Outfit', sans-serif;
+  resize: vertical;
+  transition: all 0.3s;
+}
+.form-input-sm:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(56,189,248,0.1);
+}
+.form-input-sm::placeholder { color: #4B5563; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .card-grid { grid-template-columns: 1fr; }
+  .card-full { grid-column: 1; }
+}
+@media (max-width: 768px) {
+  body { flex-direction: column; }
+  .sidebar { width: 100%; min-width: unset; height: auto; position: relative; }
+  .main { padding: 20px; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
 }
 </style>
 </head>
 <body>
 
-<div class="container">
-    <!-- Header -->
-    <div class="header-glass">
-        <div class="profile-info">
-            <div class="profile-avatar">
-                <img src="https://cdn-icons-png.flaticon.com/512/921/921347.png" alt="Patient">
-            </div>
-            <div class="profile-text">
-                <h1>Patient Dashboard</h1>
-                <p>Welcome back! Here is your health analysis overview.</p>
-            </div>
-        </div>
-        <div class="actions">
-            <button class="btn btn-primary" onclick="window.location.href='submit_symptoms.html'">Submit New Case</button>
-            <button class="btn btn-danger" onclick="logout()">Logout</button>
-        </div>
+<!-- ── SIDEBAR ── -->
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-name">🏥 MediFusion</div>
+    <div class="brand-sub">Patient Portal</div>
+  </div>
+
+  <div class="user-badge">
+    <div class="user-avatar">🧑</div>
+    <div>
+      <div class="user-name" id="sidebarUsername">Patient</div>
+      <div class="user-role">Patient Account</div>
     </div>
+  </div>
 
-    <!-- Live Update Toast -->
-    <div id="liveToast" style="display:none; margin-bottom:20px; padding:16px 24px; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.4); border-radius:14px; color:#6EE7B7; font-size:15px; font-weight:600; animation: fadeIn 0.4s ease;">
-        🔴 Live update received from your doctor!
+  <nav class="nav-section">
+    <div class="nav-label">Navigation</div>
+    <div class="nav-item active" onclick="showTab('overview')" id="nav-overview">
+      <span class="nav-icon">📊</span> Overview
     </div>
-
-    <!-- Main Grid -->
-    <div class="dashboard-grid">
-        
-        <!-- Case Details -->
-        <div class="glass-card">
-            <h3 class="card-title">🩺 Case Information</h3>
-            <div class="info-list" id="caseInfoContainer">
-                <div class="no-data">Loading your latest case...</div>
-            </div>
-        </div>
-
-        <!-- AI Visualization -->
-        <div class="glass-card">
-            <h3 class="card-title">🤖 AI Analysis Confidence</h3>
-            <div class="chart-container" id="chartWrapper">
-                <div class="no-data" id="chartFallback">No AI data to visualize yet.</div>
-                <canvas id="aiChart" style="display:none;"></canvas>
-            </div>
-        </div>
-
-        <!-- Doctor's Review -->
-        <div class="glass-card" style="grid-column: 1 / -1;">
-            <h3 class="card-title">👨‍⚕️ Doctor's Final Review</h3>
-            <div class="info-list" id="reviewContainer">
-                <div class="no-data">Pending doctor review...</div>
-            </div>
-        </div>
-
+    <div class="nav-item" onclick="showTab('submit')" id="nav-submit">
+      <span class="nav-icon">📝</span> Submit Case
     </div>
+    <div class="nav-item" onclick="showTab('results')" id="nav-results">
+      <span class="nav-icon">🤖</span> AI Results
+    </div>
+    <div class="nav-item" onclick="showTab('doctor')" id="nav-doctor">
+      <span class="nav-icon">👨‍⚕️</span> Doctor Review
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="btn-logout" onclick="logout()">🚪 Sign Out</button>
+  </div>
 </div>
+
+<!-- ── MAIN ── -->
+<main class="main">
+
+  <!-- Live Toast -->
+  <div class="live-toast" id="liveToast">
+    🟢 <strong>Live Update!</strong> Your doctor has completed your review.
+  </div>
+
+  <!-- ════ TAB: OVERVIEW ════ -->
+  <div class="tab-panel active" id="tab-overview">
+    <div class="main-header">
+      <div>
+        <h1>My Health Overview</h1>
+        <p>Welcome back! Here's your latest health status.</p>
+      </div>
+      <button class="btn-primary" onclick="showTab('submit')">+ Submit New Case</button>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon">🩺</div>
+        <div class="stat-value" id="statCaseId">—</div>
+        <div class="stat-label">Case ID</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div class="stat-value" id="statStatus">—</div>
+        <div class="stat-label">Current Status</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🤖</div>
+        <div class="stat-value" id="statAI">—</div>
+        <div class="stat-label">AI Analysis</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">👨‍⚕️</div>
+        <div class="stat-value" id="statReview">Pending</div>
+        <div class="stat-label">Doctor Review</div>
+      </div>
+    </div>
+
+    <!-- Case Info + Chart -->
+    <div class="card-grid">
+      <div class="glass-card">
+        <div class="card-title">🩺 Case Information</div>
+        <div id="overviewCaseInfo">
+          <div class="empty-state">
+            <span class="empty-icon">📋</span>
+            <p>No case found. Submit your first case.</p>
+            <button class="btn-primary" onclick="showTab('submit')">Submit Case</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <div class="card-title">🤖 AI Confidence Chart</div>
+        <div class="chart-wrap" id="chartWrap">
+          <span style="color: var(--muted); font-style: italic;">Submit a case to see AI analysis</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Doctor Review Preview -->
+    <div class="glass-card">
+      <div class="card-title">👨‍⚕️ Doctor's Review</div>
+      <div id="overviewDoctorReview">
+        <div class="empty-state">
+          <span class="empty-icon">⏳</span>
+          <p>Your case is awaiting doctor review.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ TAB: SUBMIT ════ -->
+  <div class="tab-panel" id="tab-submit">
+    <div class="main-header">
+      <div>
+        <h1>Submit New Case</h1>
+        <p>Describe your symptoms and our AI will analyze them immediately.</p>
+      </div>
+    </div>
+
+    <div class="card-grid">
+      <div class="glass-card card-full">
+        <div class="card-title">📝 Symptom Report</div>
+
+        <div class="form-group-inline">
+          <label class="form-label-sm" for="symInput">Main Symptoms *</label>
+          <input id="symInput" type="text" class="form-input-sm" placeholder="e.g. fever, severe headache, chest pain">
+        </div>
+
+        <div class="form-group-inline">
+          <label class="form-label-sm" for="descInput">Detailed Description</label>
+          <textarea id="descInput" class="form-input-sm" rows="5" placeholder="When did it start? How severe is it? What makes it better or worse? Any other relevant history..."></textarea>
+        </div>
+
+        <div id="submitMsg" style="display:none; margin-bottom:16px;"></div>
+
+        <button class="btn-primary" id="submitBtn" onclick="submitCase()" style="width:100%; padding:16px; font-size:16px;">
+          🚀 Submit to AI & Doctor
+        </button>
+      </div>
+
+      <div class="glass-card card-full">
+        <div class="card-title">💡 Tips for a Good Report</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="info-item">
+            <div class="info-label">Be Specific</div>
+            <div class="info-value">Include exact location of pain, severity (1-10), and duration.</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Include History</div>
+            <div class="info-value">Mention any pre-existing conditions or recent illnesses.</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">List Medications</div>
+            <div class="info-value">Include any medications you're currently taking.</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Context Matters</div>
+            <div class="info-value">Mention recent travel, diet changes, or stress levels.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ TAB: AI RESULTS ════ -->
+  <div class="tab-panel" id="tab-results">
+    <div class="main-header">
+      <div>
+        <h1>AI Analysis Results</h1>
+        <p>Detailed breakdown of the AI's diagnosis for your case.</p>
+      </div>
+    </div>
+
+    <div class="card-grid">
+      <div class="glass-card">
+        <div class="card-title">📊 Prediction Chart</div>
+        <div class="chart-wrap" id="aiChartWrap">
+          <span style="color: var(--muted); font-style: italic;">No AI data available</span>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <div class="card-title">📋 Raw AI Output</div>
+        <div id="aiRawOutput">
+          <div class="info-item">
+            <div class="info-label">Status</div>
+            <div class="info-value" style="color: var(--muted); font-style: italic;">Submit a case to see results</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card card-full">
+        <div class="card-title">🧠 Symptom Summary</div>
+        <div id="aiSymptomSummary">
+          <div class="info-item">
+            <div class="info-label">Reported Symptoms</div>
+            <div class="info-value" style="color: var(--muted); font-style: italic;">No data yet</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ TAB: DOCTOR REVIEW ════ -->
+  <div class="tab-panel" id="tab-doctor">
+    <div class="main-header">
+      <div>
+        <h1>Doctor's Review</h1>
+        <p>Your assigned doctor's feedback and treatment plan.</p>
+      </div>
+    </div>
+
+    <div id="doctorReviewContent">
+      <div class="glass-card">
+        <div class="card-title">👨‍⚕️ Awaiting Review</div>
+        <div class="empty-state">
+          <span class="empty-icon">⏳</span>
+          <p>Your case is being reviewed by a specialist. You'll be notified instantly when it's ready.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
 
 <script src="api.js"></script>
 <script src="patient.js"></script>

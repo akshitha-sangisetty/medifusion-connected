@@ -1,12 +1,21 @@
 // =======================================================
-// doctor.js — Doctor Dashboard Integration & Review Logic
+// doctor.js — Doctor Dashboard (Fixed & Complete)
 // =======================================================
 
 let currentCaseId = null;
 let aiChartInstance = null;
 
+// ── Auth Guard ───────────────────────────────────────────
 function getToken() {
     return localStorage.getItem("token");
+}
+
+function guardDoctorAuth() {
+    const token = getToken();
+    const role = localStorage.getItem("role");
+    if (!token) { window.location.href = "login.html"; return false; }
+    if (role && role !== "doctor") { window.location.href = "login.html"; return false; }
+    return true;
 }
 
 function logout() {
@@ -14,38 +23,30 @@ function logout() {
     window.location.href = "login.html";
 }
 
-// Set doctor name from localStorage
-const storedUsername = localStorage.getItem("username");
-const nameEl = document.getElementById("doctorName");
-if (nameEl && storedUsername) nameEl.textContent = `Dr. ${storedUsername}`;
-
+// ── Toast ────────────────────────────────────────────────
 function showToast(message, type = "success") {
     const toast = document.getElementById("toast");
+    if (!toast) return;
     toast.textContent = message;
     toast.className = `toast ${type}`;
     toast.style.display = "block";
-    setTimeout(() => { toast.style.display = "none"; }, 3500);
+    setTimeout(() => { toast.style.display = "none"; }, 4000);
 }
 
-// ----------------------------------
-// Load All Pending Cases for Sidebar
-// ----------------------------------
+// ── Load Cases into Sidebar ──────────────────────────────
 async function loadAssignedCases() {
     const token = getToken();
-    if (!token) {
-        window.location.href = "login.html";
-        return;
-    }
+    if (!token) return;
 
     const caseList = document.getElementById("caseList");
-    caseList.innerHTML = `<div class="no-cases">Loading...</div>`;
+    if (caseList) caseList.innerHTML = `<div class="no-cases">Fetching cases...</div>`;
 
     try {
         const res = await fetch(`${API_BASE}/doctor/assigned`, {
             headers: { "Authorization": `Bearer ${token}` }
         });
 
-        if (res.status === 403) {
+        if (res.status === 401 || res.status === 403) {
             window.location.href = "login.html";
             return;
         }
@@ -53,42 +54,42 @@ async function loadAssignedCases() {
         const data = await res.json();
         const cases = data.cases || [];
 
+        if (!caseList) return;
+
         if (cases.length === 0) {
-            caseList.innerHTML = `<div class="no-cases">No cases pending review.<br><br>Waiting for patients to submit cases.</div>`;
+            caseList.innerHTML = `<div class="no-cases">No cases pending review yet.<br><br>Patients must submit cases first.</div>`;
             return;
         }
 
         caseList.innerHTML = "";
         cases.forEach(c => {
-            const statusClass = c.status === "reviewed" ? "dot-reviewed" : c.status === "predicted" ? "dot-predicted" : "dot-new";
-            const item = document.createElement("div");
-            item.className = "case-item";
-            item.id = `case-item-${c.id}`;
-            item.innerHTML = `
-                <div class="case-item-name">
-                    <span class="status-dot ${statusClass}"></span>
+            const dotClass = c.status === "reviewed" ? "dot-reviewed" : c.status === "predicted" ? "dot-predicted" : "dot-new";
+            const div = document.createElement("div");
+            div.className = "case-item";
+            div.id = `case-item-${c.id}`;
+            div.innerHTML = `
+                <div class="case-patient">
+                    <span class="status-dot ${dotClass}"></span>
                     ${c.patient_name}
                 </div>
-                <div class="case-item-meta">${c.symptoms ? c.symptoms.substring(0, 60) + "..." : "No symptoms listed"}</div>
-                <div style="margin-top: 8px; font-size: 12px; color: var(--text-secondary);">Case #${c.id} • ${c.status}</div>
+                <div class="case-symptoms">${c.symptoms ? c.symptoms.substring(0, 70) + "…" : "No symptoms listed"}</div>
+                <div class="case-meta">Case #${c.id} &bull; <strong>${c.status}</strong></div>
             `;
-            item.onclick = () => openCase(c);
-            caseList.appendChild(item);
+            div.onclick = () => openCase(c);
+            caseList.appendChild(div);
         });
 
     } catch (err) {
-        console.error(err);
-        caseList.innerHTML = `<div class="no-cases" style="color: var(--danger)">Error loading cases. Check connection.</div>`;
+        console.error("loadAssignedCases error:", err);
+        if (caseList) caseList.innerHTML = `<div class="no-cases" style="color:var(--danger)">⚠️ Error loading cases. Check your connection.</div>`;
     }
 }
 
-// ----------------------------------
-// Open a Specific Case for Review
-// ----------------------------------
+// ── Open a Case for Review ───────────────────────────────
 function openCase(c) {
     currentCaseId = c.id;
 
-    // Highlight active case in sidebar
+    // Highlight in sidebar
     document.querySelectorAll(".case-item").forEach(el => el.classList.remove("active"));
     const item = document.getElementById(`case-item-${c.id}`);
     if (item) item.classList.add("active");
@@ -97,76 +98,91 @@ function openCase(c) {
     document.getElementById("emptyState").style.display = "none";
     document.getElementById("reviewPanel").style.display = "block";
 
-    // Populate header info
-    document.getElementById("reviewPatientName").textContent = `Patient: ${c.patient_name} (Case #${c.id})`;
+    // Header
+    const nameEl = document.getElementById("reviewPatientName");
+    const idEl = document.getElementById("reviewCaseId");
     const statusEl = document.getElementById("reviewStatus");
-    statusEl.textContent = c.status;
-    statusEl.className = `status-badge status-${c.status}`;
+    if (nameEl) nameEl.textContent = c.patient_name;
+    if (idEl) idEl.textContent = `Case #${c.id}`;
+    if (statusEl) {
+        statusEl.textContent = c.status;
+        statusEl.className = `badge badge-${c.status}`;
+    }
 
     // Symptoms
-    document.getElementById("symptomsDisplay").textContent = c.symptoms || "No symptoms recorded.";
+    const symEl = document.getElementById("symptomsDisplay");
+    if (symEl) symEl.textContent = c.symptoms || "No symptoms recorded.";
 
-    // AI Results
-    const aiResult = c.symptom_result;
-    if (aiResult) {
-        let displayText = "";
+    // AI Chart + Result
+    const aiWrap = document.getElementById("aiChartWrap");
+    const aiText = document.getElementById("aiResultDisplay");
+
+    if (c.symptom_result) {
+        let aiObj = {};
         try {
-            const parsed = typeof aiResult === "string" ? JSON.parse(aiResult) : aiResult;
-            displayText = Object.entries(parsed).map(([k, v]) => `${k}: ${(v * 100).toFixed(1)}%`).join("\n");
+            aiObj = typeof c.symptom_result === "string" ? JSON.parse(c.symptom_result) : c.symptom_result;
         } catch(e) {
-            displayText = String(aiResult);
+            aiObj = { [c.symptom_result]: 1.0 };
         }
-        document.getElementById("aiResultDisplay").textContent = displayText;
-        renderAIChart(aiResult);
+
+        // Text breakdown
+        if (aiText) {
+            aiText.textContent = Object.entries(aiObj)
+                .map(([k, v]) => `${k}: ${(parseFloat(v) * 100).toFixed(1)}%`)
+                .join("\n");
+        }
+
+        // Chart
+        renderDoctorChart(aiObj, aiWrap);
+
     } else {
-        document.getElementById("aiResultDisplay").textContent = "No AI symptom analysis available.";
-        document.getElementById("chartFallback").style.display = "block";
-        document.getElementById("aiChart").style.display = "none";
+        if (aiText) aiText.textContent = "No AI symptom analysis available.";
+        if (aiWrap) aiWrap.innerHTML = `<span style="color:var(--muted);font-style:italic;font-size:14px;">No AI data</span>`;
     }
 
-    // X-Ray Result
-    const xrayResult = c.xray_result;
-    if (xrayResult) {
-        let xrayText = "";
-        try {
-            const parsed = typeof xrayResult === "string" ? JSON.parse(xrayResult) : xrayResult;
-            xrayText = Object.entries(parsed).map(([k, v]) => `${k}: ${(v * 100).toFixed(1)}%`).join("\n");
-        } catch(e) {
-            xrayText = String(xrayResult);
+    // X-Ray
+    const xrayEl = document.getElementById("xrayDisplay");
+    if (xrayEl) {
+        if (c.xray_result) {
+            let xObj = {};
+            try {
+                xObj = typeof c.xray_result === "string" ? JSON.parse(c.xray_result) : c.xray_result;
+                xrayEl.textContent = Object.entries(xObj)
+                    .map(([k, v]) => `${k}: ${(parseFloat(v) * 100).toFixed(1)}%`)
+                    .join("\n");
+            } catch(e) {
+                xrayEl.textContent = String(c.xray_result);
+            }
+        } else {
+            xrayEl.textContent = "No image or X-ray uploaded by patient.";
         }
-        document.getElementById("xrayDisplay").textContent = xrayText;
-    } else {
-        document.getElementById("xrayDisplay").textContent = "No image/X-ray uploaded by patient.";
     }
 
-    // Pre-fill existing review if already reviewed
-    document.getElementById("docNotes").value = c.doctor_notes || "";
-    document.getElementById("docTests").value = c.treatment_plan || "";
-    document.getElementById("finalDiag").value = c.final_diagnosis || "";
+    // Pre-fill existing review fields
+    const notesEl = document.getElementById("docNotes");
+    const testsEl = document.getElementById("docTests");
+    const diagEl = document.getElementById("finalDiag");
+    if (notesEl) notesEl.value = c.doctor_notes || "";
+    if (testsEl) testsEl.value = c.treatment_plan || "";
+    if (diagEl) diagEl.value = c.final_diagnosis || "";
 }
 
-// ----------------------------------
-// Render Chart.js AI Visualization
-// ----------------------------------
-function renderAIChart(predictionData) {
-    document.getElementById("chartFallback").style.display = "none";
-    const canvas = document.getElementById("aiChart");
-    canvas.style.display = "block";
+// ── Render Chart.js ──────────────────────────────────────
+function renderDoctorChart(aiObj, container) {
+    if (!container) return;
 
-    let prediction = {};
-    try {
-        prediction = typeof predictionData === "string" ? JSON.parse(predictionData) : predictionData;
-    } catch(e) {
-        if (typeof predictionData === "string") {
-            prediction = { [predictionData]: 1.0 };
-        }
-    }
+    const labels = Object.keys(aiObj);
+    const values = Object.values(aiObj).map(v => {
+        const n = parseFloat(v);
+        return (n <= 1 ? n * 100 : n);
+    });
 
-    const labels = Object.keys(prediction);
-    const dataValues = Object.values(prediction).map(v => typeof v === "number" ? (v <= 1 ? parseFloat((v * 100).toFixed(1)) : v) : parseFloat(v) * 100);
+    container.innerHTML = "";
+    const canvas = document.createElement("canvas");
+    container.appendChild(canvas);
 
     if (aiChartInstance) {
-        aiChartInstance.destroy();
+        try { aiChartInstance.destroy(); } catch(e) {}
     }
 
     aiChartInstance = new Chart(canvas, {
@@ -174,10 +190,10 @@ function renderAIChart(predictionData) {
         data: {
             labels,
             datasets: [{
-                data: dataValues,
-                backgroundColor: ["#A78BFA", "#38BDF8", "#10B981", "#F59E0B", "#EF4444"],
+                data: values,
+                backgroundColor: ["#A78BFA", "#38BDF8", "#34D399", "#FBBF24", "#F87171", "#818CF8"],
                 borderWidth: 0,
-                hoverOffset: 12
+                hoverOffset: 14
             }]
         },
         options: {
@@ -187,15 +203,11 @@ function renderAIChart(predictionData) {
             plugins: {
                 legend: {
                     position: "right",
-                    labels: {
-                        color: "#F8FAFC",
-                        font: { family: "Outfit", size: 13 },
-                        padding: 16
-                    }
+                    labels: { color: "#F1F5F9", font: { family: "Outfit", size: 13 }, padding: 16 }
                 },
                 tooltip: {
                     callbacks: {
-                        label: ctx => ` ${ctx.label}: ${ctx.raw.toFixed(1)}%`
+                        label: ctx => ` ${ctx.label}: ${parseFloat(ctx.raw).toFixed(1)}%`
                     }
                 }
             }
@@ -203,9 +215,7 @@ function renderAIChart(predictionData) {
     });
 }
 
-// ----------------------------------
-// Submit Doctor Review
-// ----------------------------------
+// ── Submit Review ────────────────────────────────────────
 async function submitReview() {
     const token = getToken();
     if (!token || !currentCaseId) {
@@ -213,14 +223,17 @@ async function submitReview() {
         return;
     }
 
-    const notes = document.getElementById("docNotes").value.trim();
-    const tests = document.getElementById("docTests").value.trim();
-    const diag = document.getElementById("finalDiag").value.trim();
+    const notes = document.getElementById("docNotes")?.value.trim() || "";
+    const tests = document.getElementById("docTests")?.value.trim() || "";
+    const diag  = document.getElementById("finalDiag")?.value.trim() || "";
 
     if (!diag) {
         showToast("Please enter a final diagnosis before submitting.", "error");
         return;
     }
+
+    const btn = document.getElementById("submitReviewBtn");
+    if (btn) { btn.disabled = true; btn.textContent = "⏳ Submitting…"; }
 
     try {
         const res = await fetch(`${API_BASE}/doctor/review/${currentCaseId}`, {
@@ -235,26 +248,28 @@ async function submitReview() {
         const data = await res.json();
 
         if (res.ok) {
-            showToast("✅ Review submitted! Patient has been notified.", "success");
-            // Update the status badge
+            showToast("✅ Review submitted! Patient has been notified in real-time.", "success");
+
+            // Update status badge
             const statusEl = document.getElementById("reviewStatus");
-            statusEl.textContent = "reviewed";
-            statusEl.className = "status-badge status-reviewed";
+            if (statusEl) { statusEl.textContent = "reviewed"; statusEl.className = "badge badge-reviewed"; }
+
             // Refresh sidebar
-            setTimeout(loadAssignedCases, 500);
+            setTimeout(loadAssignedCases, 600);
+
         } else {
             showToast("Error: " + (data.detail || "Submission failed."), "error");
         }
 
     } catch (err) {
-        console.error(err);
+        console.error("submitReview error:", err);
         showToast("Connection error. Could not submit review.", "error");
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = "Submit Review & Notify Patient in Real-Time ⚡"; }
     }
 }
 
-// ============================================================
-// SOCKET.IO – Real-time sidebar refresh for doctors
-// ============================================================
+// ── Socket.IO Real-time ──────────────────────────────────
 function initDoctorSocket() {
     const token = getToken();
     if (!token) return;
@@ -273,25 +288,26 @@ function initDoctorSocket() {
         socket.emit("join_doctor_room", {});
     });
 
-    socket.on("room_joined", (data) => {
-        console.log("[Socket] Joined room:", data.room);
-    });
-
-    // When a case is updated (reviewed), silently refresh sidebar
     socket.on("doctor_case_updated", (data) => {
         console.log("[Socket] Case updated:", data);
-        // Refresh the sidebar list silently
+        // Silently refresh sidebar
         loadAssignedCases();
-        showToast(`✅ Case #${data.case_id} marked as reviewed.`, "success");
     });
 
     socket.on("connect_error", (err) => {
-        console.warn("[Socket] Doctor socket error (graceful):", err.message);
+        console.warn("[Socket] Doctor socket graceful error:", err.message);
     });
 }
 
-// Boot
+// ── Boot ─────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
+    if (!guardDoctorAuth()) return;
+
+    // Set doctor name in sidebar
+    const username = localStorage.getItem("username");
+    const nameEl = document.getElementById("doctorName");
+    if (nameEl && username) nameEl.textContent = `Dr. ${username}`;
+
     loadAssignedCases();
     initDoctorSocket();
 });
