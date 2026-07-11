@@ -1,0 +1,57 @@
+services:
+  - type: web
+    name: medifusion-api
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: medifusion-db
+          property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: medifusion-redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          type: redis
+          name: medifusion-redis
+          property: connectionString
+      - key: PYTHON_VERSION
+        value: 3.10.13
+
+  - type: worker
+    name: medifusion-celery
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: celery -A app.workers.celery_app.celery worker --loglevel=info
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: medifusion-db
+          property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: medifusion-redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          type: redis
+          name: medifusion-redis
+          property: connectionString
+      - key: PYTHON_VERSION
+        value: 3.10.13
+
+databases:
+  - name: medifusion-db
+    databaseName: medifusion
+    user: medifusion_user
+
+  - type: redis
+    name: medifusion-redis
+    ipAllowList: []
