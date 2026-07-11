@@ -4,7 +4,7 @@
 
 // Automatically point to localhost during local development, and the Render backend in production.
 // NOTE: You will need to replace the PROD_API_URL below with your actual Render deployment URL.
-const PROD_API_URL = "https://your-backend-app.onrender.com";
+const PROD_API_URL = "https://medifusion-api-11yd.onrender.com";
 const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") 
     ? "http://localhost:8000" 
     : PROD_API_URL;
