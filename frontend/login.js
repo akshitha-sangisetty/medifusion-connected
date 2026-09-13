@@ -1,5 +1,5 @@
 // =====================================================
-// login.js — Full Authentication Logic (Fixed)
+// login.js — Full Authentication Logic
 // =====================================================
 
 async function loginUser(event) {
@@ -9,53 +9,53 @@ async function loginUser(event) {
     const password = document.getElementById("password").value.trim();
     const role = document.getElementById("role").value;
     const errEl = document.getElementById("loginError");
+    const errText = document.getElementById("loginErrorText");
     const successEl = document.getElementById("loginSuccess");
+    const successText = document.getElementById("loginSuccessText");
     const btn = document.getElementById("loginBtn");
 
     errEl.style.display = "none";
     successEl.style.display = "none";
 
-    if (!username || !password || !role) {
-        errEl.textContent = "Please fill in all fields including your role.";
-        errEl.style.display = "block";
+    if (!username || !password) {
+        if (errText) errText.textContent = "Please enter your username and password.";
+        else errEl.textContent = "Please enter your username and password.";
+        errEl.style.display = "flex";
+        return;
+    }
+    if (!role) {
+        if (errText) errText.textContent = "Please select your role above.";
+        else errEl.textContent = "Please select your role above.";
+        errEl.style.display = "flex";
         return;
     }
 
-    // Show loading state
     btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span>Signing in...';
+    btn.innerHTML = '<span class="spinner"></span> Signing in...';
 
     const body = new URLSearchParams();
     body.append("username", username);
     body.append("password", password);
 
-    // Called when server is slow to wake up (Render free tier cold start)
     function onWaiting(attempt, total) {
-        btn.innerHTML = `<span class="spinner"></span>Server waking up... (${attempt}/${total})`;
-        successEl.textContent = "⏳ Server is starting up, please wait a moment...";
-        successEl.style.display = "block";
+        btn.innerHTML = `<span class="spinner"></span> Server waking up... (${attempt}/${total})`;
+        if (successText) successText.textContent = "Server is starting up, please wait a moment...";
+        else successEl.textContent = "Server is starting up, please wait a moment...";
+        successEl.style.display = "flex";
         errEl.style.display = "none";
     }
 
     try {
         const res = await fetchWithRetry(
             `${API_BASE}/auth/login`,
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body
-            },
-            3,      // retry up to 3 times
-            8000,   // 8 seconds between retries
-            onWaiting
+            { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body },
+            3, 8000, onWaiting
         );
 
         successEl.style.display = "none";
         const data = await res.json();
-        console.log("Login Response:", data);
 
         if (data.access_token) {
-            // ── Verify the actual role from the backend ──
             let actualRole = null;
             try {
                 const meRes = await fetch(`${API_BASE}/auth/me`, {
@@ -64,53 +64,48 @@ async function loginUser(event) {
                 const meData = await meRes.json();
                 actualRole = meData.role;
             } catch (e) {
-                // If /auth/me fails, trust the role the user selected
                 actualRole = role;
             }
 
             if (actualRole && actualRole !== role) {
-                errEl.textContent = `You registered as "${actualRole}" but selected "${role}". Please select the correct role.`;
-                errEl.style.display = "block";
+                const msg = `You registered as "${actualRole}" but selected "${role}". Please select the correct role tab.`;
+                if (errText) errText.textContent = msg; else errEl.textContent = msg;
+                errEl.style.display = "flex";
                 btn.disabled = false;
-                btn.innerHTML = "Sign In to Dashboard";
+                btn.innerHTML = "Sign In to Dashboard →";
                 return;
             }
 
-            // Save credentials
             localStorage.setItem("token", data.access_token);
             localStorage.setItem("role", actualRole || role);
             localStorage.setItem("username", username);
 
-            successEl.textContent = "✅ Login successful! Redirecting...";
-            successEl.style.display = "block";
+            const msg = "Login successful! Redirecting to your dashboard...";
+            if (successText) successText.textContent = msg; else successEl.textContent = msg;
+            successEl.style.display = "flex";
 
-            // Redirect based on role
             setTimeout(() => {
-                if (actualRole === "patient" || role === "patient") {
-                    window.location.href = "patient_dashboard.html";
-                } else if (actualRole === "doctor" || role === "doctor") {
-                    window.location.href = "doctor_dashboard.html";
-                } else if (actualRole === "lab" || role === "lab") {
-                    window.location.href = "lab_dashboard.html";
-                } else {
-                    window.location.href = "patient_dashboard.html";
-                }
+                const r = actualRole || role;
+                if (r === "doctor") window.location.href = "doctor_dashboard.html";
+                else if (r === "lab") window.location.href = "lab_dashboard.html";
+                else window.location.href = "patient_dashboard.html";
             }, 800);
 
         } else {
-            errEl.textContent = data.detail || "Invalid username or password. Please try again.";
-            errEl.style.display = "block";
+            const msg = data.detail || "Invalid username or password.";
+            if (errText) errText.textContent = msg; else errEl.textContent = msg;
+            errEl.style.display = "flex";
             btn.disabled = false;
-            btn.innerHTML = "Sign In to Dashboard";
+            btn.innerHTML = "Sign In to Dashboard →";
         }
 
     } catch (err) {
         console.error(err);
-        errEl.textContent = "Unable to connect to the server. Please try again in a moment.";
-        errEl.style.display = "block";
+        const msg = "Unable to connect to the server. Please try again in a moment.";
+        if (errText) errText.textContent = msg; else errEl.textContent = msg;
+        errEl.style.display = "flex";
         successEl.style.display = "none";
         btn.disabled = false;
-        btn.innerHTML = "Sign In to Dashboard";
+        btn.innerHTML = "Sign In to Dashboard →";
     }
 }
-

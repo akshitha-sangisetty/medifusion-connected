@@ -134,18 +134,31 @@ async function apiDoctorSubmitReview(token, caseId, notes) {
 
 
 // -------------------------------------------
-//  LAB MODULE (backend route coming in Phase 3)
+//  LAB MODULE
 // -------------------------------------------
 
-// Upload report
+// Look up a patient by username to get their latest case
+async function apiLabLookupPatient(token, patientUsername) {
+    const res = await fetch(`${API_BASE}/lab/lookup-patient?patient_username=${encodeURIComponent(patientUsername)}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+    });
+    return res.json();
+}
+
+// Upload official lab report (POST /lab/upload-report)
 async function apiLabUploadReport(token, formData) {
     const res = await fetch(`${API_BASE}/lab/upload-report`, {
         method: "POST",
-        headers: {
-            "Authorization": `Bearer ${token}`
-        },
+        headers: { "Authorization": `Bearer ${token}` },
         body: formData
     });
+    return res.json();
+}
 
+// Get all uploads done by this lab tech
+async function apiLabMyUploads(token) {
+    const res = await fetch(`${API_BASE}/lab/my-uploads`, {
+        headers: { "Authorization": `Bearer ${token}` }
+    });
     return res.json();
 }

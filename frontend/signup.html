@@ -3,325 +3,321 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MediFusion – Sign Up</title>
-<meta name="description" content="Create your MediFusion account – AI-powered healthcare platform">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<title>MediFusion – Create Account</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
 :root {
-  --bg: #060d1f;
-  --glass: rgba(15, 23, 42, 0.85);
-  --border: rgba(99, 179, 237, 0.18);
-  --accent: #38BDF8;
-  --accent2: #818CF8;
-  --gradient: linear-gradient(135deg, #38BDF8, #818CF8);
-  --text: #F1F5F9;
-  --muted: #94A3B8;
-  --danger: #F87171;
-  --success: #34D399;
+  --bg: #f0f4f8;
+  --white: #ffffff;
+  --primary: #0057B8;
+  --primary-light: #e8f0fb;
+  --primary-hover: #0047a0;
+  --text: #1a2332;
+  --muted: #64748b;
+  --border: #dde3ec;
+  --danger: #dc2626;
+  --danger-bg: #fef2f2;
+  --success: #16a34a;
+  --success-bg: #f0fdf4;
+  --shadow-lg: 0 16px 48px rgba(0,87,184,0.14);
 }
-
 body {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Inter', sans-serif;
   min-height: 100vh;
   background: var(--bg);
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  position: relative;
+  padding: 24px 20px;
 }
 
-.bg-orbs { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
-.orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.2;
-  animation: orbFloat 12s ease-in-out infinite;
-}
-.orb1 { width: 500px; height: 500px; background: #A78BFA; top: -150px; right: -100px; }
-.orb2 { width: 400px; height: 400px; background: #38BDF8; bottom: -100px; left: -100px; animation-delay: -6s; }
-.orb3 { width: 300px; height: 300px; background: #F59E0B; top: 60%; right: 20%; animation-delay: -4s; opacity: 0.1; }
-
-@keyframes orbFloat {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(30px, 20px); }
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(99,179,237,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(99,179,237,0.03) 1px, transparent 1px);
-  background-size: 60px 60px;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.page-wrap {
-  position: relative;
-  z-index: 1;
+.signup-wrap {
   display: flex;
-  align-items: center;
-  justify-content: center;
   width: 100%;
-  padding: 20px;
-}
-
-.auth-card {
-  width: 100%;
-  max-width: 480px;
-  background: var(--glass);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-radius: 28px;
+  max-width: 960px;
+  background: var(--white);
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
   border: 1px solid var(--border);
-  padding: 50px 48px;
-  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
 }
 
-.card-top {
-  text-align: center;
-  margin-bottom: 36px;
+/* ── LEFT ── */
+.signup-left {
+  width: 360px;
+  min-width: 360px;
+  background: linear-gradient(160deg, #0057B8 0%, #0096c7 100%);
+  padding: 56px 44px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
 }
-.logo-icon { font-size: 52px; display: block; margin-bottom: 12px; animation: pulse 3s ease-in-out infinite; }
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.08); }
+.signup-left::before {
+  content: ''; position: absolute;
+  width: 300px; height: 300px; border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+  top: -80px; right: -80px;
 }
-.card-top h2 {
-  font-size: 28px;
-  font-weight: 800;
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 6px;
+.signup-left::after {
+  content: ''; position: absolute;
+  width: 200px; height: 200px; border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+  bottom: -50px; left: -50px;
 }
-.card-top p { color: var(--muted); font-size: 15px; }
 
-.form-group { margin-bottom: 16px; }
-.form-label {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  margin-bottom: 8px;
+.sl-logo {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 52px; position: relative; z-index: 1;
 }
+.sl-logo-icon {
+  width: 44px; height: 44px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center; font-size: 24px;
+}
+.sl-logo-name { font-size: 20px; font-weight: 800; color: white; }
+.sl-logo-sub { font-size: 11px; color: rgba(255,255,255,0.65); margin-top: 1px; text-transform: uppercase; letter-spacing: 1px; }
+
+.sl-title { font-size: 26px; font-weight: 700; color: white; line-height: 1.3; margin-bottom: 12px; position: relative; z-index: 1; }
+.sl-desc { font-size: 14px; color: rgba(255,255,255,0.72); line-height: 1.6; margin-bottom: 40px; position: relative; z-index: 1; }
+
+.sl-steps { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 14px; }
+.sl-step {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.16);
+}
+.sl-step-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  color: white; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.sl-step-text { font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1.5; }
+.sl-step-text strong { color: white; display: block; font-weight: 600; margin-bottom: 2px; }
+
+/* ── RIGHT ── */
+.signup-right {
+  flex: 1;
+  padding: 48px 52px;
+  overflow-y: auto;
+}
+
+.sr-header { margin-bottom: 32px; }
+.sr-header h2 { font-size: 24px; font-weight: 700; color: var(--text); margin-bottom: 6px; letter-spacing: -0.4px; }
+.sr-header p { font-size: 14px; color: var(--muted); }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { margin-bottom: 18px; }
+.form-label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.input-wrap { position: relative; }
+.input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 15px; pointer-events: none; }
 .form-input {
   width: 100%;
-  padding: 14px 18px;
-  background: rgba(0,0,0,0.25);
-  border: 1px solid var(--border);
+  padding: 13px 16px 13px 44px;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
   border-radius: 12px;
   color: var(--text);
-  font-size: 15px;
-  font-family: 'Outfit', sans-serif;
-  transition: all 0.3s;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  transition: all 0.2s;
 }
 .form-input:focus {
   outline: none;
-  border-color: var(--accent2);
-  box-shadow: 0 0 0 3px rgba(129,140,248,0.15);
-  background: rgba(0,0,0,0.35);
+  border-color: var(--primary);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(0,87,184,0.08);
 }
-.form-input::placeholder { color: #4B5563; }
-select.form-input { cursor: pointer; }
-select.form-input option { background: #1E293B; color: var(--text); }
+.form-input::placeholder { color: #a0aec0; font-weight: 400; }
+.form-input.no-icon { padding-left: 16px; }
 
-.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-
-.role-picker {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-top: 4px;
-}
-.role-option {
-  display: none;
-}
-.role-option + label {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 14px 10px;
-  background: rgba(0,0,0,0.2);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+.role-section { margin-bottom: 22px; }
+.role-section-label { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 12px; display: block; }
+.role-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.role-card input[type="radio"] { display: none; }
+.role-card label {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 16px 10px;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 14px;
   cursor: pointer;
-  transition: all 0.25s;
-  font-size: 13px;
-  color: var(--muted);
-  text-align: center;
+  transition: all 0.2s;
+  font-size: 12px; font-weight: 600;
+  color: var(--muted); text-align: center;
 }
-.role-option + label .role-emoji { font-size: 22px; }
-.role-option:checked + label {
-  background: rgba(129,140,248,0.15);
-  border-color: var(--accent2);
-  color: var(--text);
-  box-shadow: 0 0 16px rgba(129,140,248,0.2);
+.role-card label:hover { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
+.role-card input:checked + label {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  color: var(--primary);
+  box-shadow: 0 2px 10px rgba(0,87,184,0.14);
 }
+.role-card .rc-icon { font-size: 28px; }
+.role-card .rc-title { font-size: 12px; font-weight: 700; }
+.role-card .rc-sub { font-size: 11px; font-weight: 400; color: inherit; opacity: 0.75; }
 
 .btn-signup {
   width: 100%;
-  padding: 16px;
-  background: var(--gradient);
-  border: none;
-  border-radius: 12px;
-  color: white;
-  font-size: 16px;
-  font-weight: 700;
-  font-family: 'Outfit', sans-serif;
-  cursor: pointer;
-  letter-spacing: 0.5px;
-  box-shadow: 0 4px 24px rgba(129,140,248,0.4);
-  transition: all 0.3s;
-  margin-top: 8px;
-  position: relative;
-  overflow: hidden;
+  padding: 15px;
+  background: var(--primary);
+  border: none; border-radius: 12px;
+  color: white; font-size: 15px; font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
 }
-.btn-signup::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(255,255,255,0.15);
-  transform: translateX(-100%);
-  transition: transform 0.4s;
-}
-.btn-signup:hover::after { transform: translateX(100%); }
-.btn-signup:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(129,140,248,0.5); }
-.btn-signup:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.btn-signup:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,87,184,0.28); }
+.btn-signup:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
 
 .error-box {
-  margin-top: 14px;
-  padding: 12px 16px;
-  background: rgba(248,113,113,0.12);
-  border: 1px solid rgba(248,113,113,0.3);
-  border-radius: 10px;
-  color: var(--danger);
-  font-size: 14px;
-  display: none;
+  display: none; padding: 12px 16px;
+  background: var(--danger-bg); border: 1px solid #fca5a5;
+  border-radius: 10px; color: var(--danger);
+  font-size: 13px; font-weight: 500; margin-bottom: 16px;
+  align-items: center; gap: 8px;
 }
 .success-box {
-  margin-top: 14px;
-  padding: 12px 16px;
-  background: rgba(52,211,153,0.12);
-  border: 1px solid rgba(52,211,153,0.3);
-  border-radius: 10px;
-  color: var(--success);
-  font-size: 14px;
-  display: none;
+  display: none; padding: 12px 16px;
+  background: var(--success-bg); border: 1px solid #86efac;
+  border-radius: 10px; color: var(--success);
+  font-size: 13px; font-weight: 500; margin-bottom: 16px;
+  align-items: center; gap: 8px;
 }
 
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 24px 0;
-}
+.divider { display: flex; align-items: center; gap: 12px; margin: 24px 0 18px; }
 .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-.divider span { color: var(--muted); font-size: 13px; }
+.divider span { font-size: 13px; color: var(--muted); white-space: nowrap; }
 
-.switch-link { text-align: center; font-size: 14px; color: var(--muted); }
-.switch-link a { color: var(--accent); text-decoration: none; font-weight: 600; }
-.switch-link a:hover { text-decoration: underline; }
+.signin-link { text-align: center; font-size: 13px; color: var(--muted); }
+.signin-link a { color: var(--primary); text-decoration: none; font-weight: 600; }
+.signin-link a:hover { text-decoration: underline; }
 
-.spinner {
-  display: inline-block;
-  width: 18px; height: 18px;
-  border: 2px solid rgba(255,255,255,0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  vertical-align: middle;
-  margin-right: 8px;
-}
+.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-@media (max-width: 600px) {
-  .auth-card { padding: 36px 24px; }
-  .role-picker { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 768px) {
+  .signup-wrap { flex-direction: column; }
+  .signup-left { width: 100%; min-width: unset; padding: 36px 28px; }
+  .sl-steps { display: none; }
+  .signup-right { padding: 32px 24px; }
+  .form-row { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
-<div class="bg-orbs">
-  <div class="orb orb1"></div>
-  <div class="orb orb2"></div>
-  <div class="orb orb3"></div>
-</div>
+<div class="signup-wrap">
 
-<div class="page-wrap">
-  <div class="auth-card">
-    <div class="card-top">
-      <span class="logo-icon">🏥</span>
-      <h2>Create Account</h2>
-      <p>Join MediFusion – AI-powered healthcare</p>
+  <!-- ── LEFT ── -->
+  <div class="signup-left">
+    <div class="sl-logo">
+      <div class="sl-logo-icon">🏥</div>
+      <div>
+        <div class="sl-logo-name">MediFusion</div>
+        <div class="sl-logo-sub">Healthcare System</div>
+      </div>
+    </div>
+
+    <div class="sl-title">Join MediFusion<br>Healthcare</div>
+    <div class="sl-desc">Create your account to access AI-powered diagnostics and connect with medical specialists.</div>
+
+    <div class="sl-steps">
+      <div class="sl-step">
+        <div class="sl-step-num">1</div>
+        <div class="sl-step-text"><strong>Create Account</strong>Fill in your details and choose your role.</div>
+      </div>
+      <div class="sl-step">
+        <div class="sl-step-num">2</div>
+        <div class="sl-step-text"><strong>Submit Your Case</strong>Describe symptoms or upload medical files.</div>
+      </div>
+      <div class="sl-step">
+        <div class="sl-step-num">3</div>
+        <div class="sl-step-text"><strong>Get AI Insights</strong>Receive instant analysis and doctor review.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT ── -->
+  <div class="signup-right">
+    <div class="sr-header">
+      <h2>Create Your Account</h2>
+      <p>Join MediFusion — takes less than 2 minutes</p>
     </div>
 
     <form id="signupForm" onsubmit="signupUser(event)">
-      <div class="row-2">
+      <div class="form-row">
         <div class="form-group">
           <label class="form-label" for="username">Username</label>
-          <input id="username" type="text" class="form-input" placeholder="Choose username" required autocomplete="username">
+          <div class="input-wrap">
+            <span class="input-icon">👤</span>
+            <input id="username" type="text" class="form-input" placeholder="Choose a username" required autocomplete="username">
+          </div>
         </div>
         <div class="form-group">
           <label class="form-label" for="full_name">Full Name</label>
-          <input id="full_name" type="text" class="form-input" placeholder="Your full name" required>
+          <div class="input-wrap">
+            <span class="input-icon">📋</span>
+            <input id="full_name" type="text" class="form-input" placeholder="Your full name" required>
+          </div>
         </div>
       </div>
 
       <div class="form-group">
         <label class="form-label" for="password">Password</label>
-        <input id="password" type="password" class="form-input" placeholder="Create a strong password" required autocomplete="new-password">
+        <div class="input-wrap">
+          <span class="input-icon">🔑</span>
+          <input id="password" type="password" class="form-input" placeholder="Create a strong password (min. 6 chars)" required autocomplete="new-password">
+        </div>
       </div>
 
-      <div class="form-group">
-        <label class="form-label">Select Your Role</label>
-        <div class="role-picker">
-          <div>
-            <input type="radio" name="role" id="role_patient" value="patient" class="role-option" required>
+      <div class="role-section">
+        <span class="role-section-label">Select Your Role</span>
+        <div class="role-grid">
+          <div class="role-card">
+            <input type="radio" name="role" id="role_patient" value="patient" required>
             <label for="role_patient">
-              <span class="role-emoji">🧑‍🦽</span>
-              Patient
+              <span class="rc-icon">🧑‍🦽</span>
+              <span class="rc-title">Patient</span>
+              <span class="rc-sub">Submit symptoms &amp; view results</span>
             </label>
           </div>
-          <div>
-            <input type="radio" name="role" id="role_doctor" value="doctor" class="role-option">
+          <div class="role-card">
+            <input type="radio" name="role" id="role_doctor" value="doctor">
             <label for="role_doctor">
-              <span class="role-emoji">👨‍⚕️</span>
-              Doctor
+              <span class="rc-icon">👨‍⚕️</span>
+              <span class="rc-title">Doctor</span>
+              <span class="rc-sub">Review cases &amp; diagnose</span>
             </label>
           </div>
-          <div>
-            <input type="radio" name="role" id="role_lab" value="lab" class="role-option">
+          <div class="role-card">
+            <input type="radio" name="role" id="role_lab" value="lab">
             <label for="role_lab">
-              <span class="role-emoji">🔬</span>
-              Lab Tech
+              <span class="rc-icon">🔬</span>
+              <span class="rc-title">Lab Tech</span>
+              <span class="rc-sub">Upload lab reports</span>
             </label>
           </div>
         </div>
       </div>
 
-      <div id="signupError" class="error-box"></div>
-      <div id="signupSuccess" class="success-box"></div>
+      <div id="signupError" class="error-box">⚠️ <span id="signupErrorText"></span></div>
+      <div id="signupSuccess" class="success-box">✅ <span id="signupSuccessText"></span></div>
 
-      <button id="signupBtn" class="btn-signup" type="submit">Create My Account</button>
+      <button id="signupBtn" class="btn-signup" type="submit">Create My Account →</button>
     </form>
 
-    <div class="divider"><span>Already registered?</span></div>
-    <div class="switch-link">
-      Have an account? <a href="login.html">← Sign in here</a>
-    </div>
+    <div class="divider"><span>Already have an account?</span></div>
+    <div class="signin-link"><a href="login.html">← Sign in to MediFusion</a></div>
   </div>
-</div>
 
+</div>
 <script src="api.js"></script>
 <script src="signup.js"></script>
 </body>

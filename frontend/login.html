@@ -3,385 +3,427 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MediFusion – Login</title>
-<meta name="description" content="Login to MediFusion – AI-powered healthcare platform">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<title>MediFusion – Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg: #060d1f;
-  --glass: rgba(15, 23, 42, 0.85);
-  --border: rgba(99, 179, 237, 0.18);
-  --accent: #38BDF8;
-  --accent2: #818CF8;
-  --gradient: linear-gradient(135deg, #38BDF8, #818CF8);
-  --text: #F1F5F9;
-  --muted: #94A3B8;
-  --danger: #F87171;
-  --success: #34D399;
+  --bg: #f0f4f8;
+  --white: #ffffff;
+  --primary: #0057B8;
+  --primary-light: #e8f0fb;
+  --primary-hover: #0047a0;
+  --accent: #00b4d8;
+  --text: #1a2332;
+  --muted: #64748b;
+  --border: #dde3ec;
+  --danger: #dc2626;
+  --danger-bg: #fef2f2;
+  --success: #16a34a;
+  --success-bg: #f0fdf4;
+  --shadow: 0 4px 24px rgba(0,87,184,0.10);
+  --shadow-lg: 0 16px 48px rgba(0,87,184,0.16);
 }
 
 body {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Inter', sans-serif;
   min-height: 100vh;
   background: var(--bg);
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  position: relative;
-}
-
-/* Animated background */
-.bg-orbs {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-}
-.orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.2;
-  animation: orbFloat 12s ease-in-out infinite;
-}
-.orb1 { width: 500px; height: 500px; background: #818CF8; top: -150px; left: -100px; }
-.orb2 { width: 400px; height: 400px; background: #38BDF8; bottom: -100px; right: -100px; animation-delay: -6s; animation-direction: reverse; }
-.orb3 { width: 300px; height: 300px; background: #34D399; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: -3s; }
-
-@keyframes orbFloat {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(30px, 20px); }
-}
-
-/* Grid overlay */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(99,179,237,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(99,179,237,0.03) 1px, transparent 1px);
-  background-size: 60px 60px;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.page-wrap {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
   padding: 20px;
 }
 
-/* Split layout */
-.auth-split {
+/* ── LAYOUT ── */
+.login-wrap {
   display: flex;
-  max-width: 900px;
   width: 100%;
-  border-radius: 28px;
+  max-width: 960px;
+  min-height: 580px;
+  background: var(--white);
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg);
   overflow: hidden;
-  box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px var(--border);
+  border: 1px solid var(--border);
 }
 
-/* Left panel */
-.auth-left {
-  flex: 1;
-  background: linear-gradient(145deg, rgba(56,189,248,0.12), rgba(129,140,248,0.12));
+/* ── LEFT PANEL ── */
+.login-left {
+  width: 400px;
+  min-width: 400px;
+  background: linear-gradient(160deg, #0057B8 0%, #0096c7 100%);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 40px;
-  border-right: 1px solid var(--border);
+  padding: 56px 48px;
   position: relative;
+  overflow: hidden;
 }
-.auth-left-logo {
-  font-size: 48px;
-  margin-bottom: 20px;
-  animation: pulse 3s ease-in-out infinite;
+.login-left::before {
+  content: '';
+  position: absolute;
+  width: 360px; height: 360px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  top: -80px; right: -80px;
 }
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.08); }
+.login-left::after {
+  content: '';
+  position: absolute;
+  width: 240px; height: 240px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  bottom: -60px; left: -60px;
 }
-.auth-left h1 {
-  font-size: 32px;
-  font-weight: 800;
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-align: center;
-  margin-bottom: 12px;
+
+.hospital-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 48px;
+  position: relative; z-index: 1;
 }
-.auth-left p {
-  color: var(--muted);
-  font-size: 15px;
-  text-align: center;
+.logo-icon {
+  width: 48px; height: 48px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+}
+.logo-text { font-size: 22px; font-weight: 800; color: white; letter-spacing: -0.5px; }
+.logo-sub { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 1px; text-transform: uppercase; letter-spacing: 1px; }
+
+.left-headline {
+  position: relative; z-index: 1;
+  color: white;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 14px;
+}
+.left-sub {
+  position: relative; z-index: 1;
+  color: rgba(255,255,255,0.75);
+  font-size: 14px;
   line-height: 1.6;
-  max-width: 240px;
+  margin-bottom: 40px;
 }
-.feature-list {
-  margin-top: 32px;
+
+.feature-pills {
+  position: relative; z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  width: 100%;
+  gap: 12px;
 }
-.feature-item {
+.pill {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  background: rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.12);
   border-radius: 12px;
-  border: 1px solid var(--border);
-  font-size: 14px;
-  color: var(--muted);
+  border: 1px solid rgba(255,255,255,0.18);
 }
-.feature-icon { font-size: 20px; }
+.pill-icon {
+  width: 34px; height: 34px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.pill-text { font-size: 13px; color: rgba(255,255,255,0.9); font-weight: 500; }
 
-/* Right panel */
-.auth-right {
+.left-footer {
+  position: relative; z-index: 1;
+  margin-top: auto;
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  padding-top: 32px;
+  border-top: 1px solid rgba(255,255,255,0.15);
+}
+
+/* ── RIGHT PANEL ── */
+.login-right {
   flex: 1;
-  background: var(--glass);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  padding: 60px 50px;
+  padding: 56px 52px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.auth-right h2 {
-  font-size: 28px;
+.login-right-header {
+  margin-bottom: 36px;
+}
+.login-right-header h2 {
+  font-size: 26px;
   font-weight: 700;
   color: var(--text);
   margin-bottom: 6px;
+  letter-spacing: -0.5px;
 }
-.auth-right .tagline {
+.login-right-header p {
+  font-size: 14px;
   color: var(--muted);
-  font-size: 15px;
-  margin-bottom: 36px;
 }
 
-.form-group {
-  margin-bottom: 18px;
+.role-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 28px;
+  padding: 5px;
+  background: var(--bg);
+  border-radius: 14px;
 }
+.role-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  background: transparent;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.role-tab:hover { background: white; color: var(--text); }
+.role-tab.active { background: white; color: var(--primary); border-color: var(--primary); box-shadow: 0 2px 8px rgba(0,87,184,0.12); }
+.role-tab .tab-icon { font-size: 20px; }
+.role-tab .tab-label { font-size: 11px; font-weight: 600; }
+
+.form-group { margin-bottom: 20px; }
 .form-label {
   display: block;
   font-size: 13px;
   font-weight: 600;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
+  color: var(--text);
   margin-bottom: 8px;
+}
+.input-wrap {
+  position: relative;
+}
+.input-icon {
+  position: absolute;
+  left: 14px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  pointer-events: none;
 }
 .form-input {
   width: 100%;
-  padding: 14px 18px;
-  background: rgba(0,0,0,0.25);
-  border: 1px solid var(--border);
+  padding: 13px 16px 13px 44px;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
   border-radius: 12px;
   color: var(--text);
-  font-size: 15px;
-  font-family: 'Outfit', sans-serif;
-  transition: all 0.3s;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  transition: all 0.2s;
 }
 .form-input:focus {
   outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
-  background: rgba(0,0,0,0.35);
+  border-color: var(--primary);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(0,87,184,0.08);
 }
-.form-input::placeholder { color: #4B5563; }
-select.form-input { cursor: pointer; }
-select.form-input option { background: #1E293B; color: var(--text); }
+.form-input::placeholder { color: #a0aec0; font-weight: 400; }
 
 .btn-login {
   width: 100%;
-  padding: 16px;
-  background: var(--gradient);
+  padding: 15px;
+  background: var(--primary);
   border: none;
   border-radius: 12px;
   color: white;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Inter', sans-serif;
   cursor: pointer;
-  letter-spacing: 0.5px;
-  box-shadow: 0 4px 24px rgba(56,189,248,0.4);
-  transition: all 0.3s;
+  letter-spacing: 0.3px;
+  transition: all 0.2s;
   margin-top: 8px;
-  position: relative;
-  overflow: hidden;
-}
-.btn-login::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(255,255,255,0.15);
-  transform: translateX(-100%);
-  transition: transform 0.4s;
-}
-.btn-login:hover::after { transform: translateX(100%); }
-.btn-login:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(56,189,248,0.55);
-}
-.btn-login:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.error-box {
-  margin-top: 16px;
-  padding: 12px 16px;
-  background: rgba(248,113,113,0.12);
-  border: 1px solid rgba(248,113,113,0.3);
-  border-radius: 10px;
-  color: var(--danger);
-  font-size: 14px;
-  display: none;
-}
-.success-box {
-  margin-top: 16px;
-  padding: 12px 16px;
-  background: rgba(52,211,153,0.12);
-  border: 1px solid rgba(52,211,153,0.3);
-  border-radius: 10px;
-  color: var(--success);
-  font-size: 14px;
-  display: none;
-}
-
-.divider {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin: 24px 0;
+  justify-content: center;
+  gap: 8px;
 }
-.divider::before, .divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-.divider span { color: var(--muted); font-size: 13px; }
+.btn-login:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,87,184,0.28); }
+.btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
 
-.switch-link {
+.error-box {
+  display: none;
+  padding: 12px 16px;
+  background: var(--danger-bg);
+  border: 1px solid #fca5a5;
+  border-radius: 10px;
+  color: var(--danger);
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+.success-box {
+  display: none;
+  padding: 12px 16px;
+  background: var(--success-bg);
+  border: 1px solid #86efac;
+  border-radius: 10px;
+  color: var(--success);
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  align-items: center;
+  gap: 8px;
+}
+
+.divider { display: flex; align-items: center; gap: 12px; margin: 24px 0 20px; }
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.divider span { font-size: 13px; color: var(--muted); white-space: nowrap; }
+
+.signup-link {
   text-align: center;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--muted);
 }
-.switch-link a {
-  color: var(--accent);
+.signup-link a {
+  color: var(--primary);
   text-decoration: none;
   font-weight: 600;
 }
-.switch-link a:hover { text-decoration: underline; }
+.signup-link a:hover { text-decoration: underline; }
 
 .spinner {
   display: inline-block;
-  width: 18px;
-  height: 18px;
-  border: 2px solid rgba(255,255,255,0.3);
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.4);
   border-top-color: white;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
-  vertical-align: middle;
-  margin-right: 8px;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-@media (max-width: 700px) {
-  .auth-split { flex-direction: column; border-radius: 20px; }
-  .auth-left { display: none; }
-  .auth-right { padding: 40px 30px; }
+@media (max-width: 768px) {
+  .login-wrap { flex-direction: column; min-height: auto; }
+  .login-left { width: 100%; min-width: unset; padding: 36px 32px; }
+  .left-headline { font-size: 22px; }
+  .feature-pills { display: none; }
+  .left-footer { display: none; }
+  .login-right { padding: 36px 28px; }
 }
 </style>
 </head>
 <body>
-<div class="bg-orbs">
-  <div class="orb orb1"></div>
-  <div class="orb orb2"></div>
-  <div class="orb orb3"></div>
-</div>
 
-<div class="page-wrap">
-  <div class="auth-split">
-    <!-- Left Panel -->
-    <div class="auth-left">
-      <div class="auth-left-logo">🏥</div>
-      <h1>MediFusion</h1>
-      <p>AI-powered healthcare connecting patients, doctors, and labs seamlessly.</p>
-      <div class="feature-list">
-        <div class="feature-item">
-          <span class="feature-icon">🤖</span>
-          <span>AI Symptom Analysis</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-icon">👨‍⚕️</span>
-          <span>Expert Doctor Review</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-icon">⚡</span>
-          <span>Real-time Notifications</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-icon">🔒</span>
-          <span>Secure & Private</span>
-        </div>
+<div class="login-wrap">
+
+  <!-- ── LEFT PANEL ── -->
+  <div class="login-left">
+    <div class="hospital-logo">
+      <div class="logo-icon">🏥</div>
+      <div>
+        <div class="logo-text">MediFusion</div>
+        <div class="logo-sub">Healthcare System</div>
       </div>
     </div>
 
-    <!-- Right Panel (Form) -->
-    <div class="auth-right">
-      <h2>Welcome Back</h2>
-      <p class="tagline">Sign in to your MediFusion account</p>
+    <div class="left-headline">Connecting Patients,<br>Doctors &amp; Labs</div>
+    <div class="left-sub">AI-powered clinical platform for seamless healthcare coordination and intelligent diagnostics.</div>
 
-      <form id="loginForm" onsubmit="loginUser(event)">
-        <div class="form-group">
-          <label class="form-label" for="username">Username</label>
+    <div class="feature-pills">
+      <div class="pill">
+        <div class="pill-icon">🤖</div>
+        <div class="pill-text">AI-Powered Symptom Analysis</div>
+      </div>
+      <div class="pill">
+        <div class="pill-icon">🩺</div>
+        <div class="pill-text">Expert Clinical Review</div>
+      </div>
+      <div class="pill">
+        <div class="pill-icon">⚡</div>
+        <div class="pill-text">Real-Time Notifications</div>
+      </div>
+      <div class="pill">
+        <div class="pill-icon">🔒</div>
+        <div class="pill-text">Secure & HIPAA-Aligned</div>
+      </div>
+    </div>
+
+    <div class="left-footer">© 2024 MediFusion Healthcare Platform</div>
+  </div>
+
+  <!-- ── RIGHT PANEL ── -->
+  <div class="login-right">
+    <div class="login-right-header">
+      <h2>Welcome Back</h2>
+      <p>Sign in to your MediFusion portal</p>
+    </div>
+
+    <!-- Role selector tabs -->
+    <div class="role-tabs" id="roleTabs">
+      <button class="role-tab active" onclick="selectRole('patient', this)">
+        <span class="tab-icon">🧑‍🦽</span>
+        <span class="tab-label">Patient</span>
+      </button>
+      <button class="role-tab" onclick="selectRole('doctor', this)">
+        <span class="tab-icon">👨‍⚕️</span>
+        <span class="tab-label">Doctor</span>
+      </button>
+      <button class="role-tab" onclick="selectRole('lab', this)">
+        <span class="tab-icon">🔬</span>
+        <span class="tab-label">Lab Tech</span>
+      </button>
+    </div>
+
+    <form id="loginForm" onsubmit="loginUser(event)">
+      <input type="hidden" id="role" value="patient">
+
+      <div class="form-group">
+        <label class="form-label" for="username">Username</label>
+        <div class="input-wrap">
+          <span class="input-icon">👤</span>
           <input id="username" type="text" class="form-input" placeholder="Enter your username" required autocomplete="username">
         </div>
+      </div>
 
-        <div class="form-group">
-          <label class="form-label" for="password">Password</label>
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔑</span>
           <input id="password" type="password" class="form-input" placeholder="Enter your password" required autocomplete="current-password">
         </div>
-
-        <div class="form-group">
-          <label class="form-label" for="role">Role</label>
-          <select id="role" class="form-input" required>
-            <option value="">Select your role</option>
-            <option value="patient">🧑‍🦽 Patient</option>
-            <option value="doctor">👨‍⚕️ Doctor</option>
-            <option value="lab">🔬 Lab Technician</option>
-          </select>
-        </div>
-
-        <div id="loginError" class="error-box"></div>
-        <div id="loginSuccess" class="success-box"></div>
-
-        <button id="loginBtn" class="btn-login" type="submit">Sign In to Dashboard</button>
-      </form>
-
-      <div class="divider"><span>New to MediFusion?</span></div>
-      <div class="switch-link">
-        Don't have an account? <a href="signup.html">Create one now →</a>
       </div>
-    </div>
+
+      <div id="loginError" class="error-box">⚠️ <span id="loginErrorText"></span></div>
+      <div id="loginSuccess" class="success-box">✅ <span id="loginSuccessText"></span></div>
+
+      <button id="loginBtn" class="btn-login" type="submit">
+        Sign In to Dashboard →
+      </button>
+    </form>
+
+    <div class="divider"><span>New to MediFusion?</span></div>
+    <div class="signup-link">Don't have an account? <a href="signup.html">Create one here →</a></div>
   </div>
+
 </div>
 
 <script src="api.js"></script>
+<script>
+function selectRole(role, el) {
+  document.getElementById('role').value = role;
+  document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+</script>
 <script src="login.js"></script>
 </body>
 </html>

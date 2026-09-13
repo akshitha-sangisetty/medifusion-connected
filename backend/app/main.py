@@ -11,6 +11,7 @@ from app.ai.predictor import deterministic_image_predict, symptoms_to_prediction
 from app.api.auth.routes import router as auth_router, get_current_user
 from app.models.user import User
 from app.models.base import Base
+from app.models.patient_case import PatientCase, Attachment, CaseAnalysis  # ensure all tables created
 from app.core.database import engine, get_db
 from app.api.patient.routes import router as patient_router
 from app.api.predict.routes import router as predict_router

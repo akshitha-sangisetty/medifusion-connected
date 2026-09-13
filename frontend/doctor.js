@@ -117,44 +117,52 @@ function openCase(c) {
     const aiWrap = document.getElementById("aiChartWrap");
     const aiText = document.getElementById("aiResultDisplay");
 
-    if (c.symptom_result) {
-        let aiObj = {};
-        try {
-            aiObj = typeof c.symptom_result === "string" ? JSON.parse(c.symptom_result) : c.symptom_result;
-        } catch(e) {
-            aiObj = { [c.symptom_result]: 1.0 };
+    if (c.confidence_scores || c.symptom_result) {
+        let aiObj = c.confidence_scores || {};
+        if (!c.confidence_scores && c.symptom_result) {
+            try { aiObj = typeof c.symptom_result === "string" ? JSON.parse(c.symptom_result) : c.symptom_result; }
+            catch(e) { aiObj = { [c.symptom_result]: 1.0 }; }
         }
 
-        // Text breakdown
         if (aiText) {
-            aiText.textContent = Object.entries(aiObj)
-                .map(([k, v]) => `${k}: ${(parseFloat(v) * 100).toFixed(1)}%`)
-                .join("\n");
+            const lines = [];
+            if (c.raw_prediction_class) lines.push(`Classification: ${c.raw_prediction_class}`);
+            lines.push("─────────────────");
+            Object.entries(aiObj).forEach(([k, v]) => {
+                lines.push(`${k}: ${(parseFloat(v) * 100).toFixed(1)}%`);
+            });
+            aiText.textContent = lines.join("\n");
         }
-
-        // Chart
         renderDoctorChart(aiObj, aiWrap);
-
     } else {
-        if (aiText) aiText.textContent = "No AI symptom analysis available.";
+        if (aiText) aiText.textContent = "No AI analysis available.";
         if (aiWrap) aiWrap.innerHTML = `<span style="color:var(--muted);font-style:italic;font-size:14px;">No AI data</span>`;
     }
 
-    // X-Ray
-    const xrayEl = document.getElementById("xrayDisplay");
-    if (xrayEl) {
-        if (c.xray_result) {
-            let xObj = {};
-            try {
-                xObj = typeof c.xray_result === "string" ? JSON.parse(c.xray_result) : c.xray_result;
-                xrayEl.textContent = Object.entries(xObj)
-                    .map(([k, v]) => `${k}: ${(parseFloat(v) * 100).toFixed(1)}%`)
-                    .join("\n");
-            } catch(e) {
-                xrayEl.textContent = String(c.xray_result);
-            }
+    // Doctor Summary (detailed AI summary for doctor)
+    const docSumEl = document.getElementById("doctorSummaryDisplay");
+    if (docSumEl) {
+        docSumEl.textContent = c.doctor_summary || (c.raw_prediction_class
+            ? `AI predicted: ${c.raw_prediction_class}. No detailed summary available.`
+            : "No AI summary available.");
+    }
+
+    // Patient Summary (plain language)
+    const patSumEl = document.getElementById("patientSummaryDisplay");
+    if (patSumEl) {
+        patSumEl.textContent = c.patient_summary || "No patient summary available.";
+    }
+
+    // X-Ray / Attachments
+    const attachEl = document.getElementById("xrayDisplay");
+    if (attachEl) {
+        const attachments = c.attachments || [];
+        if (attachments.length === 0) {
+            attachEl.textContent = "No files attached to this case.";
         } else {
-            xrayEl.textContent = "No image or X-ray uploaded by patient.";
+            attachEl.textContent = attachments.map(a =>
+                `[${a.uploaded_by.toUpperCase()}] ${a.original_filename || a.file_path} (${a.file_type || "file"})`
+            ).join("\n");
         }
     }
 
@@ -213,7 +221,6 @@ function renderDoctorChart(aiObj, container) {
             }
         }
     });
-}
 
 // ── Submit Review ────────────────────────────────────────
 async function submitReview() {
