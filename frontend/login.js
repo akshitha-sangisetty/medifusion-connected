@@ -29,13 +29,28 @@ async function loginUser(event) {
     body.append("username", username);
     body.append("password", password);
 
-    try {
-        const res = await fetch(`${API_BASE}/auth/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body
-        });
+    // Called when server is slow to wake up (Render free tier cold start)
+    function onWaiting(attempt, total) {
+        btn.innerHTML = `<span class="spinner"></span>Server waking up... (${attempt}/${total})`;
+        successEl.textContent = "⏳ Server is starting up, please wait a moment...";
+        successEl.style.display = "block";
+        errEl.style.display = "none";
+    }
 
+    try {
+        const res = await fetchWithRetry(
+            `${API_BASE}/auth/login`,
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body
+            },
+            3,      // retry up to 3 times
+            8000,   // 8 seconds between retries
+            onWaiting
+        );
+
+        successEl.style.display = "none";
         const data = await res.json();
         console.log("Login Response:", data);
 
@@ -91,9 +106,11 @@ async function loginUser(event) {
 
     } catch (err) {
         console.error(err);
-        errEl.textContent = "Unable to connect to the server. Please check your internet connection.";
+        errEl.textContent = "Unable to connect to the server. Please try again in a moment.";
         errEl.style.display = "block";
+        successEl.style.display = "none";
         btn.disabled = false;
         btn.innerHTML = "Sign In to Dashboard";
     }
 }
+

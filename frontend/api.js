@@ -2,12 +2,38 @@
 // api.js  —  Global Frontend API Layer
 // ===========================================
 
-// Automatically point to localhost during local development, and the Render backend in production.
-// NOTE: You will need to replace the PROD_API_URL below with your actual Render deployment URL.
 const PROD_API_URL = "https://medifusion-api-11yd.onrender.com";
-const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") 
-    ? "http://localhost:8000" 
+// "" covers file:// protocol (opening HTML directly), localhost covers local dev
+const API_BASE = (["localhost", "127.0.0.1", ""].includes(window.location.hostname))
+    ? "http://localhost:8000"
     : PROD_API_URL;
+
+// -------------------------------------------
+//  FETCH WITH RETRY (handles Render cold start)
+//  Render free tier sleeps after inactivity —
+//  first request can take 30-60s to respond.
+//  This retries up to `retries` times with a
+//  delay, and calls onWaiting() so the UI can
+//  show a "waking up" message.
+// -------------------------------------------
+async function fetchWithRetry(url, options = {}, retries = 3, delayMs = 5000, onWaiting = null) {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 60000); // 60s timeout per attempt
+            const res = await fetch(url, { ...options, signal: controller.signal });
+            clearTimeout(timeout);
+            return res;
+        } catch (err) {
+            if (attempt < retries) {
+                if (onWaiting) onWaiting(attempt, retries);
+                await new Promise(r => setTimeout(r, delayMs));
+            } else {
+                throw err;
+            }
+        }
+    }
+}
 
 // -------------------------------------------
 //  AUTH MODULE

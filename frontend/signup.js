@@ -40,13 +40,28 @@ async function signupUser(event) {
         role
     };
 
-    try {
-        const res = await fetch(`${API_BASE}/auth/register`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
+    // Called when server is slow to wake up (Render free tier cold start)
+    function onWaiting(attempt, total) {
+        btn.innerHTML = `<span class="spinner"></span>Server waking up... (${attempt}/${total})`;
+        successEl.textContent = "⏳ Server is starting up, please wait a moment...";
+        successEl.style.display = "block";
+        errEl.style.display = "none";
+    }
 
+    try {
+        const res = await fetchWithRetry(
+            `${API_BASE}/auth/register`,
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            },
+            3,      // retry up to 3 times
+            8000,   // 8 seconds between retries
+            onWaiting
+        );
+
+        successEl.style.display = "none";
         const data = await res.json();
         console.log("Signup Response:", data);
 
@@ -64,8 +79,9 @@ async function signupUser(event) {
 
     } catch (err) {
         console.error(err);
-        errEl.textContent = "Signup failed — backend may be offline. Please try again.";
+        errEl.textContent = "Unable to connect to the server. Please try again in a moment.";
         errEl.style.display = "block";
+        successEl.style.display = "none";
         btn.disabled = false;
         btn.innerHTML = "Create My Account";
     }
