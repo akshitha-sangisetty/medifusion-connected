@@ -1,3 +1,14 @@
 # ai/__init__.py
-from .predictor import deterministic_image_predict, symptoms_to_prediction
-from .labels import LABELS
+from .model_loader import (
+    XrayModelUnavailable,
+    XrayTriageResult,
+    model_status,
+    predict_dicom,
+)
+
+__all__ = [
+    "XrayModelUnavailable",
+    "XrayTriageResult",
+    "model_status",
+    "predict_dicom",
+]

@@ -2,12 +2,11 @@ import logging
 import os
 
 import socketio
-from fastapi import FastAPI, UploadFile, File, Depends
+from fastapi import FastAPI, UploadFile, File, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from app.ai.predictor import deterministic_image_predict, symptoms_to_prediction
 from app.api.auth.routes import router as auth_router, get_current_user
 from app.models.user import User
 from app.models.base import Base
@@ -72,17 +71,20 @@ class SymptomTest(BaseModel):
 
 @fastapi_app.post("/test-ai-symptoms", tags=["AI Test"])
 def test_ai_symptoms(data: SymptomTest, current_user: User = Depends(get_current_user)):
-    prediction = symptoms_to_prediction(data.symptoms)
-    return {"input": data.symptoms, "prediction": prediction}
+    raise HTTPException(
+        status_code=410,
+        detail="Symptom-based mock predictions were removed. No symptom AI diagnosis is available.",
+    )
 
 # ---------------------------
 # Test model with image
 # ---------------------------
 @fastapi_app.post("/test-ai-image", tags=["AI Test"])
 async def test_ai_image(file: UploadFile = File(...), current_user: User = Depends(get_current_user)):
-    image_bytes = await file.read()
-    prediction = deterministic_image_predict(image_bytes)
-    return {"filename": file.filename, "prediction": prediction}
+    raise HTTPException(
+        status_code=410,
+        detail="Use POST /predict/image with a research DICOM chest X-ray and an enabled approved checkpoint.",
+    )
 
 # ---------------------------
 # Root endpoint

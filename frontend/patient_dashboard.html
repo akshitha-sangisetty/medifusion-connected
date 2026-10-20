@@ -350,7 +350,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
     <div class="tab-panel" id="tab-submit">
       <div class="card-grid">
         <div class="card card-full">
-          <div class="card-title">📝 Submit New Case</div>
+          <div class="card-title">📝 Record Symptoms</div>
           <div class="form-group">
             <label class="form-label" for="symInput">Main Symptoms *</label>
             <input id="symInput" type="text" class="form-input" placeholder="e.g. fever, chest pain, shortness of breath">
@@ -361,7 +361,26 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
           </div>
           <div id="submitMsg" class="submit-msg"></div>
           <button class="btn-primary" id="submitBtn" onclick="submitCase()" style="width:100%;padding:14px;font-size:15px;margin-top:4px;">
-            🚀 Submit for AI Analysis
+            Save Symptoms (No AI Diagnosis)
+          </button>
+        </div>
+
+        <div class="card card-full">
+          <div class="card-title">🩻 Experimental DICOM Chest X-Ray Triage</div>
+          <p style="color:var(--muted);line-height:1.6;margin-bottom:16px;">
+            Research-only feature. Upload one single-frame chest X-ray DICOM file (<code>.dcm</code>) for an experimental possible-pulmonary-opacity review flag. This is not a diagnosis and must be reviewed by a qualified clinician or radiologist.
+          </p>
+          <div class="form-group">
+            <label class="form-label" for="xrayInput">DICOM chest X-ray *</label>
+            <input id="xrayInput" type="file" class="form-input" accept=".dcm,application/dicom">
+          </div>
+          <label style="display:flex;align-items:flex-start;gap:8px;color:var(--text);line-height:1.5;margin-bottom:14px;">
+            <input id="researchAcknowledgement" type="checkbox" style="margin-top:3px;">
+            <span>I understand this is an experimental research result, not a diagnosis or treatment recommendation.</span>
+          </label>
+          <div id="xraySubmitMsg" class="submit-msg"></div>
+          <button class="btn-primary" id="xraySubmitBtn" onclick="uploadExperimentalXray()" style="width:100%;padding:14px;font-size:15px;">
+            Upload for Experimental Clinician Review
           </button>
         </div>
 

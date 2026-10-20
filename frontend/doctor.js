@@ -117,7 +117,29 @@ function openCase(c) {
     const aiWrap = document.getElementById("aiChartWrap");
     const aiText = document.getElementById("aiResultDisplay");
 
-    if (c.confidence_scores || c.symptom_result) {
+    const triage = c.confidence_scores?.experimental_triage ? c.confidence_scores : null;
+
+    if (triage) {
+        const score = Number(triage.possible_pulmonary_opacity_score || 0);
+        const threshold = Number(triage.review_threshold || 0.36);
+        const reviewStatus = triage.review_flag
+            ? "Flagged for experimental clinician review"
+            : "Not flagged by the experimental threshold";
+
+        if (aiText) {
+            aiText.textContent = [
+                "RESEARCH-ONLY DICOM TRIAGE",
+                "─────────────────",
+                `Possible pulmonary-opacity model score: ${(score * 100).toFixed(1)}%`,
+                `Experimental review threshold: ${(threshold * 100).toFixed(1)}%`,
+                `Result: ${reviewStatus}`,
+                "Not a diagnosis. Do not use this score for treatment decisions."
+            ].join("\n");
+        }
+        if (aiWrap) {
+            aiWrap.innerHTML = `<span style="color:var(--warn);font-style:italic;font-size:14px;text-align:center;line-height:1.6;">Research model score shown as text to avoid implying a diagnostic probability.</span>`;
+        }
+    } else if (c.confidence_scores || c.symptom_result) {
         let aiObj = c.confidence_scores || {};
         if (!c.confidence_scores && c.symptom_result) {
             try { aiObj = typeof c.symptom_result === "string" ? JSON.parse(c.symptom_result) : c.symptom_result; }
@@ -221,6 +243,7 @@ function renderDoctorChart(aiObj, container) {
             }
         }
     });
+}
 
 // ── Submit Review ────────────────────────────────────────
 async function submitReview() {

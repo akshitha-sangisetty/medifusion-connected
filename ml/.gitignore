@@ -1,0 +1,6 @@
+# The RSNA source data is large and licensed for research use. Never commit it.
+data/
+artifacts/
+models/
+__pycache__/
+.venv/

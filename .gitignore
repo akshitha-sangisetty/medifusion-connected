@@ -50,3 +50,12 @@ node_modules/
 
 # Uploads
 backend/app/uploads/
+
+# Trained research model artifacts (large and governed separately)
+backend/model_artifacts/
+*.pt
+*.pth
+
+# Local ML dependency installs and virtual environments
+ml/.packages/
+ml/.venv*/

@@ -1,3 +1,3 @@
-# Labels for chest X-ray predictions
-XRAY_LABELS = ["normal", "pneumonia", "covid-like", "effusion"]
-LABELS = ["normal", "pneumonia", "covid-like", "effusion"]
+# The trained model supports one research-only triage target.
+XRAY_LABELS = ["experimental_possible_pulmonary_opacity_review"]
+LABELS = XRAY_LABELS

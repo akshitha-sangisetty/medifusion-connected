@@ -27,8 +27,8 @@ function showTab(tabName) {
 
     const titles = {
         overview: ["My Health Overview", "Welcome back — here's your latest health status"],
-        submit:   ["Submit New Case", "Describe your symptoms for AI analysis"],
-        results:  ["AI Analysis Results", "Detailed breakdown of your diagnosis"],
+        submit:   ["Submit New Case", "Record symptoms or upload a research DICOM study"],
+        results:  ["Experimental Triage Results", "Clinician review is required; this is not a diagnosis"],
         doctor:   ["Doctor's Review", "Your specialist's feedback and treatment plan"],
     };
     if (titles[tabName]) {
@@ -63,7 +63,7 @@ async function submitCase() {
         const data = await res.json();
 
         if (data.case_id) {
-            showSubmitMsg("✅ Case submitted! AI analysis complete. Redirecting...", "success");
+            showSubmitMsg("✅ Symptoms saved. No AI diagnosis was performed.", "success");
             setTimeout(() => { showTab("overview"); loadPatientCase(); }, 1500);
         } else {
             showSubmitMsg("Error: " + (data.detail || "Failed to submit case."), "error");
@@ -72,7 +72,7 @@ async function submitCase() {
         showSubmitMsg("Connection error. Please try again.", "error");
     } finally {
         btn.disabled = false;
-        btn.textContent = "🚀 Submit for AI Analysis";
+        btn.textContent = "Save Symptoms (No AI Diagnosis)";
     }
 }
 
@@ -82,6 +82,68 @@ function showSubmitMsg(msg, type) {
     el.className = "submit-msg " + type;
     el.style.display = "block";
     el.textContent = msg;
+}
+
+function showXraySubmitMsg(msg, type) {
+    const el = document.getElementById("xraySubmitMsg");
+    if (!el) return;
+    el.className = "submit-msg " + type;
+    el.style.display = "block";
+    el.textContent = msg;
+}
+
+async function uploadExperimentalXray() {
+    const token = getToken();
+    if (!token) { window.location.href = "login.html"; return; }
+
+    const input = document.getElementById("xrayInput");
+    const acknowledgement = document.getElementById("researchAcknowledgement");
+    const button = document.getElementById("xraySubmitBtn");
+    const file = input?.files?.[0];
+
+    if (!file) {
+        showXraySubmitMsg("Choose a DICOM chest X-ray (.dcm) file first.", "error");
+        return;
+    }
+    if (!file.name.toLowerCase().endsWith(".dcm")) {
+        showXraySubmitMsg("This experimental model accepts .dcm files only.", "error");
+        return;
+    }
+    if (!acknowledgement?.checked) {
+        showXraySubmitMsg("Please acknowledge the research-only limitation before uploading.", "error");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    button.disabled = true;
+    button.textContent = "⏳ Uploading and running experimental triage...";
+
+    try {
+        const res = await fetch(`${API_BASE}/predict/image`, {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${token}` },
+            body: formData,
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+            showXraySubmitMsg(`Upload not completed: ${data.detail || "Please try again."}`, "error");
+            return;
+        }
+
+        showXraySubmitMsg(
+            "✅ Experimental result saved. A clinician or radiologist must review the X-ray.",
+            "success"
+        );
+        setTimeout(() => { showTab("overview"); loadPatientCase(); }, 1200);
+    } catch (err) {
+        showXraySubmitMsg("Connection error. Please try again.", "error");
+    } finally {
+        button.disabled = false;
+        button.textContent = "Upload for Experimental Clinician Review";
+    }
 }
 
 // ── Load Dashboard Data ──────────────────────────────────
@@ -111,7 +173,8 @@ async function loadPatientCase() {
         // Stats
         setEl("statCaseId", "#" + c.id);
         setEl("statStatus", c.status ? c.status.charAt(0).toUpperCase() + c.status.slice(1) : "—");
-        setEl("statAI", c.patient_summary ? "✅ Done" : "⏳ Pending");
+        const triage = c.confidence_scores?.experimental_triage ? c.confidence_scores : null;
+        setEl("statAI", triage ? "Research only" : (c.patient_summary ? "✅ Recorded" : "⏳ Pending"));
         setEl("statReview", c.status === "reviewed" ? "✅ Done" : "⏳ Pending");
 
         // Overview case info
@@ -135,7 +198,10 @@ async function loadPatientCase() {
                     ${c.raw_prediction_class ? `<div class="info-row"><div class="info-key">Classification</div><div class="info-val" style="color:var(--primary);font-weight:700;">${c.raw_prediction_class}</div></div>` : ""}
                 `;
             }
-            if (c.confidence_scores) {
+            if (triage) {
+                renderExperimentalTriage(triage, "aiChartWrap");
+                renderExperimentalTriage(triage, "chartWrap");
+            } else if (c.confidence_scores) {
                 renderAIChart(c.confidence_scores, "aiChartWrap");
                 renderAIChart(c.confidence_scores, "chartWrap");
             }
@@ -207,6 +273,25 @@ function renderDoctorReview(c) {
 }
 
 function setEl(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+
+function renderExperimentalTriage(triage, containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const score = Number(triage.possible_pulmonary_opacity_score || 0);
+    const threshold = Number(triage.review_threshold || 0.36);
+    const flag = Boolean(triage.review_flag);
+    const status = flag ? "Flagged for clinician review" : "Not flagged by the experimental threshold";
+
+    container.innerHTML = `
+        <div style="max-width:360px;line-height:1.6;color:var(--text);">
+          <div style="font-weight:700;color:var(--warn);margin-bottom:8px;">Research-only chest X-ray triage</div>
+          <div><strong>Model score:</strong> ${(score * 100).toFixed(1)}%</div>
+          <div><strong>Review threshold:</strong> ${(threshold * 100).toFixed(1)}%</div>
+          <div style="margin-top:8px;font-weight:700;">${status}</div>
+          <div style="margin-top:10px;color:var(--muted);font-size:12px;">Not a diagnosis. A qualified clinician or radiologist must review the image.</div>
+        </div>`;
+}
 
 // ── Chart.js ─────────────────────────────────────────────
 function renderAIChart(aiObj, containerId) {

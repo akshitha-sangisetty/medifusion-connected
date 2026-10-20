@@ -1,0 +1,8 @@
+-r requirements.txt
+
+# API-only inference dependencies. Docker installs these from PyTorch's CPU
+# wheel repository; the Celery worker does not need them.
+numpy>=1.26,<3
+pydicom>=3.0.1,<4
+torch==2.7.1+cpu
+torchvision==0.22.1+cpu

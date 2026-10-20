@@ -8,6 +8,11 @@ services:
     container_name: medifusion_api
     ports:
       - "8000:8000"
+    environment:
+      MEDIFUSION_XRAY_MODEL_ENABLED: ${MEDIFUSION_XRAY_MODEL_ENABLED:-0}
+      MEDIFUSION_XRAY_CHECKPOINT: /app/model_artifacts/medifusion_densenet_full_best.pt
+    volumes:
+      - ${MEDIFUSION_MODEL_ARTIFACT_DIR:-./model_artifacts}:/app/model_artifacts:ro
     depends_on:
       - postgres
       - redis
