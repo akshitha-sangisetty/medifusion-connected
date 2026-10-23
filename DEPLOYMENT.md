@@ -12,14 +12,16 @@ The approved checkpoint is intentionally excluded from Git:
 
 It must be kept private. Do not commit it to Git or put it in a public URL.
 
-1. Ensure `akshitha-sangisetty/medifusion-connected` is a **private** GitHub
-   repository.
-2. Create a private GitHub Release (for example, tag `model-v1`) and upload
-   `medifusion_densenet_full_best.pt` as its release asset.
+1. Create a separate **private** GitHub repository for model artifacts (for
+   example, `medifusion-model-artifacts`). Do not use the public
+   `medifusion-connected` application repository.
+2. Create a private GitHub Release in that artifact repository (for example,
+   tag `model-v1`) and upload `medifusion_densenet_full_best.pt` as its
+   release asset.
 3. Copy that asset's browser download URL.
-4. Create a fine-grained GitHub personal access token limited to this
-   repository with **Contents: Read-only** permission. Never paste it into
-   this repository or frontend code.
+4. Create a fine-grained GitHub personal access token limited only to the
+   private artifact repository with **Contents: Read-only** permission. Never
+   paste it into this repository or frontend code.
 
 ## Render setup
 
