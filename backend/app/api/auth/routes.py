@@ -8,7 +8,7 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import bcrypt
-from app.config import SECRET_KEY
+from app.config import JWT_ISSUER, PUBLIC_REGISTRATION_ROLES, SECRET_KEY
 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
@@ -28,18 +28,19 @@ def verify_password(plain_password, hashed_password):
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
-    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
-    to_encode.update({"exp": expire})
+    now = datetime.utcnow()
+    expire = now + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    to_encode.update({"exp": expire, "iat": now, "iss": JWT_ISSUER})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def get_user_from_token(token: str, db: Session) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM], issuer=JWT_ISSUER)
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
@@ -51,11 +52,20 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         raise credentials_exception
     return user
 
+
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    return get_user_from_token(token, db)
+
 # ------------------
 # Routes
 # ------------------
 @router.post("/register", response_model=UserOut)
 def register(u: UserCreate, db: Session = Depends(get_db)):
+    if u.role not in PUBLIC_REGISTRATION_ROLES:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="This role must be provisioned by an administrator.",
+        )
     existing = db.query(User).filter(User.username == u.username).first()
     if existing:
         raise HTTPException(status_code=400, detail="Username already taken")

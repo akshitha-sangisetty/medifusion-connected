@@ -1,35 +1,29 @@
-from datetime import datetime, timedelta
+"""Legacy compatibility helpers. New routes use ``api.auth.routes`` directly."""
+
+from datetime import timedelta
 from typing import Optional
-import jwt
-from passlib.context import CryptContext
 
-SECRET_KEY = "your-secret-key"  # Change this in production
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+import bcrypt
+from jose import JWTError, jwt
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+from app.config import JWT_ISSUER, SECRET_KEY
+from app.api.auth.routes import ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token as _create_access_token
 
 # Password hashing
 def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+    return bcrypt.hashpw(password.encode("utf-8")[:72], bcrypt.gensalt()).decode("utf-8")
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+    return bcrypt.checkpw(plain_password.encode("utf-8")[:72], hashed_password.encode("utf-8"))
 
 # JWT token creation
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
-    to_encode = data.copy()
-    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+    return _create_access_token(data, expires_delta)
 
 # JWT token verification
 def decode_access_token(token: str):
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM], issuer=JWT_ISSUER)
         return payload
-    except jwt.ExpiredSignatureError:
-        return None
-    except jwt.PyJWTError:
+    except JWTError:
         return None

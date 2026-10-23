@@ -19,6 +19,12 @@ services:
         value: https://medifusion-connected.vercel.app
       - key: MAX_UPLOAD_BYTES
         value: "26214400"
+      # Only patients may self-register in production. Doctor and lab accounts
+      # must be provisioned through an approved staff-identity process.
+      - key: PUBLIC_REGISTRATION_ROLES
+        value: patient
+      - key: LOG_LEVEL
+        value: INFO
       # These values are entered only in the Render Dashboard. They are never
       # committed because the model release and its token are private.
       - key: MEDIFUSION_XRAY_MODEL_ENABLED

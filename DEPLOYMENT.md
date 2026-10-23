@@ -47,6 +47,20 @@ Uploaded DICOMs and lab reports remain temporary on the Render free plan.
 Use only non-sensitive demonstration files until separate private object
 storage is configured for uploads.
 
+## Production controls still required
+
+Before handling any real patient data, configure private encrypted object
+storage for uploads, a managed Redis service, and an identity-provisioning
+process for clinicians and lab technicians. The production configuration only
+allows patient self-registration; staff accounts must not be created through
+the public sign-up page. Use a managed secrets store and rotate `SECRET_KEY`
+and the GitHub access token on a documented schedule.
+
+The API provides a `/health` endpoint, but it does not replace operational
+monitoring. Add uptime checks, centralized structured logs, error tracking,
+database backups and restore testing, and alerting before a production launch.
+Do not use the current Render free-plan deployment for protected health data.
+
 ## Verification
 
 After deployment, verify these URLs:

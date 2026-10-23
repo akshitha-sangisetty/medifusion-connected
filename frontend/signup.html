@@ -273,38 +273,23 @@ body {
         <label class="form-label" for="password">Password</label>
         <div class="input-wrap">
           <span class="input-icon">🔑</span>
-          <input id="password" type="password" class="form-input" placeholder="Create a strong password (min. 6 chars)" required autocomplete="new-password">
+          <input id="password" type="password" class="form-input" placeholder="Create a strong password (min. 12 chars)" minlength="12" required autocomplete="new-password">
         </div>
       </div>
 
       <div class="role-section">
-        <span class="role-section-label">Select Your Role</span>
+        <span class="role-section-label">Account Type</span>
         <div class="role-grid">
           <div class="role-card">
-            <input type="radio" name="role" id="role_patient" value="patient" required>
+            <input type="radio" name="role" id="role_patient" value="patient" checked required>
             <label for="role_patient">
               <span class="rc-icon">🧑‍🦽</span>
               <span class="rc-title">Patient</span>
               <span class="rc-sub">Submit symptoms &amp; view results</span>
             </label>
           </div>
-          <div class="role-card">
-            <input type="radio" name="role" id="role_doctor" value="doctor">
-            <label for="role_doctor">
-              <span class="rc-icon">👨‍⚕️</span>
-              <span class="rc-title">Doctor</span>
-              <span class="rc-sub">Review cases &amp; diagnose</span>
-            </label>
-          </div>
-          <div class="role-card">
-            <input type="radio" name="role" id="role_lab" value="lab">
-            <label for="role_lab">
-              <span class="rc-icon">🔬</span>
-              <span class="rc-title">Lab Tech</span>
-              <span class="rc-sub">Upload lab reports</span>
-            </label>
-          </div>
         </div>
+        <p class="rc-sub">Doctor and lab accounts are created through the approved staff-provisioning process.</p>
       </div>
 
       <div id="signupError" class="error-box">⚠️ <span id="signupErrorText"></span></div>

@@ -60,7 +60,6 @@ def get_assigned_cases(
 ):
     cases = (
         db.query(PatientCase)
-        .filter(PatientCase.status != "submitted")
         .order_by(PatientCase.id.desc())
         .all()
     )

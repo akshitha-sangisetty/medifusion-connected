@@ -1,5 +1,6 @@
 # app/api/predict/routes.py
 import os
+import logging
 from pathlib import Path
 from uuid import uuid4
 
@@ -22,6 +23,7 @@ from app.ai.model_loader import (
 )
 
 router = APIRouter(prefix="/predict", tags=["Predict"])
+logger = logging.getLogger(__name__)
 
 
 @router.get("/xray-model-status")
@@ -153,8 +155,9 @@ async def predict_from_image(
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except Exception:
+        logger.exception("Unexpected failure while processing an X-ray upload")
+        raise HTTPException(status_code=500, detail="Unable to process the uploaded image.")
 
 
 # ---------------------------

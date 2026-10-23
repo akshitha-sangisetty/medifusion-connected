@@ -17,7 +17,7 @@ from app.api.patient.routes import router as patient_router
 from app.api.predict.routes import router as predict_router
 from app.api.lab.routes import router as lab_router
 from app.api.doctor.routes import router as doctor_router
-from app.config import ALLOWED_ORIGINS
+from app.config import ALLOWED_ORIGINS, LOG_LEVEL
 
 # Socket.IO manager (must be imported AFTER all route modules so they can use `sio`)
 from app.socket_manager import sio
@@ -25,7 +25,7 @@ from app.socket_manager import sio
 # ---------------------------
 # Logging
 # ---------------------------
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=getattr(logging, LOG_LEVEL, logging.INFO))
 logger = logging.getLogger(__name__)
 
 # ---------------------------

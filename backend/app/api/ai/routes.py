@@ -1,16 +1,12 @@
 # app/api/ai/routes.py
-from fastapi import APIRouter, UploadFile, File
+from fastapi import APIRouter, HTTPException, UploadFile, File
 
 router = APIRouter(prefix="/ai", tags=["AI"])
 
 @router.post("/predict-from-image")
 async def predict_image(file: UploadFile = File(...)):
-    """
-    Endpoint to receive an image file and return prediction.
-    """
-    contents = await file.read()
-
-    # TODO: call your AI model here
-    result = {"filename": file.filename, "prediction": "dummy_result"}
-
-    return result
+    """Retained only to return a clear response to obsolete clients."""
+    raise HTTPException(
+        status_code=410,
+        detail="This endpoint was retired. Use the authenticated /predict/image endpoint.",
+    )

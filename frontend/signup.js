@@ -22,8 +22,8 @@ async function signupUser(event) {
         return;
     }
 
-    if (password.length < 6) {
-        errEl.textContent = "Password must be at least 6 characters.";
+    if (password.length < 12) {
+        errEl.textContent = "Password must be at least 12 characters.";
         errEl.style.display = "block";
         return;
     }

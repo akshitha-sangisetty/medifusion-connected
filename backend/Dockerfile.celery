@@ -10,6 +10,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY ./app /app/app
 COPY ./app/workers /app/workers
 
+RUN useradd --create-home --shell /usr/sbin/nologin appuser \
+ && chown -R appuser:appuser /app
+USER appuser
 
 # Set environment variable so Python can find modules
 ENV PYTHONPATH=/app

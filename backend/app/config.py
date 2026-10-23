@@ -8,6 +8,16 @@ if ENVIRONMENT == "production" and not SECRET_KEY:
 # A local-only fallback keeps the development workflow simple. It is never
 # accepted for a production deployment.
 SECRET_KEY = SECRET_KEY or "development-only-secret-not-for-production"
+JWT_ISSUER = os.getenv("JWT_ISSUER", "medifusion-api")
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
+PUBLIC_REGISTRATION_ROLES = {
+    role.strip()
+    for role in os.getenv(
+        "PUBLIC_REGISTRATION_ROLES",
+        "patient" if ENVIRONMENT == "production" else "patient,doctor,lab",
+    ).split(",")
+    if role.strip()
+}
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://localhost:6379/0")
 CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND", "redis://localhost:6379/1")
 
