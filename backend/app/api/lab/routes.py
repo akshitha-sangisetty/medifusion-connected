@@ -1,5 +1,6 @@
 # app/api/lab/routes.py
 import os
+from uuid import uuid4
 
 from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -8,7 +9,7 @@ from app.core.database import get_db
 from app.models.patient_case import PatientCase, Attachment
 from app.models.user import User
 from app.api.auth.routes import get_current_user
-from app.config import UPLOAD_DIR
+from app.config import MAX_UPLOAD_BYTES, UPLOAD_DIR
 
 router = APIRouter(prefix="/lab", tags=["Lab"])
 
@@ -86,12 +87,18 @@ async def upload_report(
         raise HTTPException(status_code=404, detail="Case not found")
 
     # Save file to disk
-    ext = os.path.splitext(file.filename)[1]
-    filename = f"lab_{lab_user.id}_case_{case_id}{ext}"
+    ext = os.path.splitext(file.filename)[1].lower()
+    filename = f"lab_{lab_user.id}_case_{case_id}_{uuid4().hex}{ext}"
     file_path = os.path.join(UPLOAD_DIR, filename)
 
+    content = await file.read()
+    if len(content) > MAX_UPLOAD_BYTES:
+        raise HTTPException(
+            status_code=413,
+            detail=f"Upload exceeds the {MAX_UPLOAD_BYTES // (1024 * 1024)} MiB limit.",
+        )
     with open(file_path, "wb") as f:
-        f.write(await file.read())
+        f.write(content)
 
     # Save attachment record
     attachment = Attachment(

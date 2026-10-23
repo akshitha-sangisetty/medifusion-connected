@@ -12,7 +12,7 @@ from app.models.patient_case import PatientCase, Attachment
 from app.api.auth.routes import get_current_user
 from app.models.user import User
 from app.services.ai_service import analyze_case
-from app.config import UPLOAD_DIR
+from app.config import MAX_UPLOAD_BYTES, UPLOAD_DIR
 from app.ai.model_loader import (
     UnsupportedXrayError,
     XrayModelUnavailable,
@@ -98,6 +98,11 @@ async def predict_from_image(
         # the approved artifact or if its state dictionary cannot be loaded.
         load_model()
         content = await file.read()
+        if len(content) > MAX_UPLOAD_BYTES:
+            raise HTTPException(
+                status_code=413,
+                detail=f"Upload exceeds the {MAX_UPLOAD_BYTES // (1024 * 1024)} MiB limit.",
+            )
         validate_dicom_bytes(content)
 
         # Preserve only a generated filename; never trust a client-provided path.

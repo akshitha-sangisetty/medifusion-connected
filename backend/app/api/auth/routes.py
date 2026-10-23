@@ -8,8 +8,8 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import bcrypt
+from app.config import SECRET_KEY
 
-SECRET_KEY = "your-secret-key-change-this"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 

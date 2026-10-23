@@ -3,11 +3,12 @@ app/socket_manager.py
 Centralised Socket.IO server instance used by main.py and route handlers.
 """
 import socketio
+from app.config import ALLOWED_ORIGINS
 
 # Async Socket.IO server (ASGI-compatible)
 sio = socketio.AsyncServer(
     async_mode="asgi",
-    cors_allowed_origins="*",
+    cors_allowed_origins=ALLOWED_ORIGINS,
     logger=False,
     engineio_logger=False,
 )

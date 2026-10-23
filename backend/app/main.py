@@ -6,6 +6,7 @@ from fastapi import FastAPI, UploadFile, File, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 
 from app.api.auth.routes import router as auth_router, get_current_user
 from app.models.user import User
@@ -16,6 +17,7 @@ from app.api.patient.routes import router as patient_router
 from app.api.predict.routes import router as predict_router
 from app.api.lab.routes import router as lab_router
 from app.api.doctor.routes import router as doctor_router
+from app.config import ALLOWED_ORIGINS
 
 # Socket.IO manager (must be imported AFTER all route modules so they can use `sio`)
 from app.socket_manager import sio
@@ -41,7 +43,7 @@ fastapi_app.include_router(auth_router)
 # ---------------------------
 fastapi_app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -91,6 +93,18 @@ async def test_ai_image(file: UploadFile = File(...), current_user: User = Depen
 # ---------------------------
 @fastapi_app.get("/", tags=["Root"])
 def root():
+    return {"ok": True, "service": "MediFusion Backend"}
+
+
+@fastapi_app.get("/health", tags=["Health"])
+def health():
+    """Deployment health check, including database connectivity."""
+    try:
+        with engine.connect() as connection:
+            connection.execute(text("SELECT 1"))
+    except Exception as exc:
+        logger.exception("Health check database failure")
+        raise HTTPException(status_code=503, detail="Database is unavailable") from exc
     return {"ok": True, "service": "MediFusion Backend"}
 
 # ---------------------------

@@ -5,12 +5,30 @@ services:
     rootDir: backend
     plan: free
     buildCommand: pip install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements-ml.txt
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    startCommand: python -m app.start_server
     envVars:
       - key: DATABASE_URL
         fromDatabase:
           name: medifusion-db
           property: connectionString
+      - key: ENVIRONMENT
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_ORIGINS
+        value: https://medifusion-connected.vercel.app
+      - key: MAX_UPLOAD_BYTES
+        value: "26214400"
+      # These values are entered only in the Render Dashboard. They are never
+      # committed because the model release and its token are private.
+      - key: MEDIFUSION_XRAY_MODEL_ENABLED
+        sync: false
+      - key: MEDIFUSION_MODEL_RELEASE_URL
+        sync: false
+      - key: MEDIFUSION_MODEL_GITHUB_TOKEN
+        sync: false
+      - key: MEDIFUSION_MODEL_SHA256
+        value: FCAA0AE95B2C3D81D06B8338F7CF4C72E9DA7432E17887541A1E586F73D907AF
       - key: PYTHON_VERSION
         value: 3.10.13
 

@@ -115,6 +115,10 @@ def _dicom_to_tensor(file_path: str | Path) -> torch.Tensor:
 
     low, high = np.percentile(image, [1, 99])
     image = np.clip((image - low) / max(high - low, 1e-6), 0, 1)
+    # RescaleSlope/RescaleIntercept can promote NumPy's float32 pixels to
+    # float64. The trained DenseNet checkpoint uses float32 parameters, so
+    # make the inference tensor explicit before passing it to PyTorch.
+    image = image.astype(np.float32, copy=False)
 
     tensor = torch.from_numpy(image).unsqueeze(0).unsqueeze(0)
     tensor = functional.interpolate(
